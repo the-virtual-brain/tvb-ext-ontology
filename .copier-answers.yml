@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.3.5
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: tvb.admin@thevirtualbrain.org
+author_name: TVB Team
+has_binder: false
+has_settings: false
+kind: server
+labextension_name: tvb-ext-ontology
+project_short_description: A JupyterLab extension.
+python_name: tvb_ext_ontology
+repository: https://github.com/the-virtual-brain/tvb-ext-ontology
+test: true
+
