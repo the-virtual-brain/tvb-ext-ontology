@@ -11,4 +11,3 @@ project_short_description: A JupyterLab extension.
 python_name: tvb_ext_ontology
 repository: https://github.com/the-virtual-brain/tvb-ext-ontology
 test: true
-
