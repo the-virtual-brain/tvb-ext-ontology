@@ -62,7 +62,10 @@
         "@jupyterlab/galata": "^5.2.4",
         "@jupyterlab/launcher": "^4.2.4",
         "@jupyterlab/services": "^7.0.0",
-        "@lumino/widgets": "^2.4.0"
+        "@jupyterlab/ui-components": "^4.2.4",
+        "@lumino/widgets": "^2.4.0",
+        "react-force-graph-2d": "^1.25.5",
+        "react-force-graph-3d": "^1.24.3"
     },
     "devDependencies": {
         "@jupyterlab/builder": "^4.0.0",

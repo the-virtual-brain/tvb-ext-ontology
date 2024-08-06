@@ -5,6 +5,19 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"3d-force-graph@npm:^1.73":
+  version: 1.73.3
+  resolution: "3d-force-graph@npm:1.73.3"
+  dependencies:
+    accessor-fn: 1
+    kapsule: 1
+    three: ">=0.118 <1"
+    three-forcegraph: 1
+    three-render-objects: ^1.29
+  checksum: 3fd5811b956a18919c170a26a77797fbddb858ca6e32909bd0352de11ad344b98bb0908b05d4a3337b3c46bd244cd7167d4b50f1f5c9de30aa490a06fb136b5a
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.2.0":
   version: 2.3.0
   resolution: "@ampproject/remapping@npm:2.3.0"
@@ -1307,7 +1320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.8.4":
   version: 7.25.0
   resolution: "@babel/runtime@npm:7.25.0"
   dependencies:
@@ -3763,6 +3776,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tweenjs/tween.js@npm:18 - 23":
+  version: 23.1.3
+  resolution: "@tweenjs/tween.js@npm:23.1.3"
+  checksum: 2f8a908b275bb6729bde4b863c277bf7411d2e0302ceb0455369479077b89eaf8380cd9206b91ff574416418a95c6f06db4e1ddea732a286d0db0ba8e7c093d3
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.1.14":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
@@ -4364,6 +4384,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"accessor-fn@npm:1":
+  version: 1.5.1
+  resolution: "accessor-fn@npm:1.5.1"
+  checksum: 89faa969a6c75862b7fd8d0afc538ac4d75e1bdc68c4edd300efd1efaf29274867161fec0a53b83b7296a2b9cc613847b6ffc6a5ad14a74131c644dac625d8dc
+  languageName: node
+  linkType: hard
+
 "acorn-globals@npm:^7.0.0":
   version: 7.0.1
   resolution: "acorn-globals@npm:7.0.1"
@@ -4773,6 +4800,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bezier-js@npm:3 - 6":
+  version: 6.1.4
+  resolution: "bezier-js@npm:6.1.4"
+  checksum: bd0d38cb33709db1f8f9f232ebf967b8ed68e3970bc2965165fcab5fc4554c02720234328e336eda140a28e4fe64dedf968e8f8172e483e55a5175e49b00c72b
+  languageName: node
+  linkType: hard
+
 "big.js@npm:^5.2.2":
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
@@ -4917,6 +4951,15 @@ __metadata:
   version: 1.0.30001646
   resolution: "caniuse-lite@npm:1.0.30001646"
   checksum: 53d45b990d21036aaab7547e164174a0ac9a117acdd14a6c33822c4983e2671b1df48686d5383002d0ef158b208b0047a7dc404312a6229bf8ee629de3351b44
+  languageName: node
+  linkType: hard
+
+"canvas-color-tracker@npm:1":
+  version: 1.2.2
+  resolution: "canvas-color-tracker@npm:1.2.2"
+  dependencies:
+    tinycolor2: ^1.6.0
+  checksum: 5b2a09c45d11d69af74d1cc0652bba3d78d7c2430d60b6800608379fc03fa73656ce73a93d437a5e88c58735f1cb0e77b5a389b3f4a994249488f3d0be12eec9
   languageName: node
   linkType: hard
 
@@ -5316,6 +5359,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"d3-binarytree@npm:1":
+  version: 1.0.2
+  resolution: "d3-binarytree@npm:1.0.2"
+  checksum: 6768077e82844373d78fcf5202a098217f8e534ec132231dd6aefbe49f5f04ffb1a6acb36c032e03426495a5018d291d61e0a6edf987dfb628ac447d88cd72c9
+  languageName: node
+  linkType: hard
+
 "d3-color@npm:1 - 3, d3-color@npm:^3.1.0":
   version: 3.1.0
   resolution: "d3-color@npm:3.1.0"
@@ -5339,6 +5389,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"d3-drag@npm:2 - 3":
+  version: 3.0.0
+  resolution: "d3-drag@npm:3.0.0"
+  dependencies:
+    d3-dispatch: 1 - 3
+    d3-selection: 3
+  checksum: d297231e60ecd633b0d076a63b4052b436ddeb48b5a3a11ff68c7e41a6774565473a6b064c5e9256e88eca6439a917ab9cea76032c52d944ddbf4fd289e31111
+  languageName: node
+  linkType: hard
+
 "d3-dsv@npm:^3.0.1":
   version: 3.0.1
   resolution: "d3-dsv@npm:3.0.1"
@@ -5357,6 +5417,26 @@ __metadata:
     tsv2csv: bin/dsv2dsv.js
     tsv2json: bin/dsv2json.js
   checksum: 5fc0723647269d5dccd181d74f2265920ab368a2868b0b4f55ffa2fecdfb7814390ea28622cd61ee5d9594ab262879509059544e9f815c54fe76fbfb4ffa4c8a
+  languageName: node
+  linkType: hard
+
+"d3-ease@npm:1 - 3":
+  version: 3.0.1
+  resolution: "d3-ease@npm:3.0.1"
+  checksum: 06e2ee5326d1e3545eab4e2c0f84046a123dcd3b612e68858219aa034da1160333d9ce3da20a1d3486d98cb5c2a06f7d233eee1bc19ce42d1533458bd85dedcd
+  languageName: node
+  linkType: hard
+
+"d3-force-3d@npm:2 - 3":
+  version: 3.0.5
+  resolution: "d3-force-3d@npm:3.0.5"
+  dependencies:
+    d3-binarytree: 1
+    d3-dispatch: 1 - 3
+    d3-octree: 1
+    d3-quadtree: 1 - 3
+    d3-timer: 1 - 3
+  checksum: 36426a752187236c1f8b901f2244f49e19955c6f281936f2d1508779081ef856b867510a1e0ecf9a62ba5f6e17caed21a20ed4fedbbdc1887e745261723569a4
   languageName: node
   linkType: hard
 
@@ -5420,6 +5500,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"d3-octree@npm:1":
+  version: 1.0.2
+  resolution: "d3-octree@npm:1.0.2"
+  checksum: 73161dda8f15c58db58ea1abc0a5fbffe5628f29bb3358933c696c378cee3de70226108fe0923963bbbc6a02dfee79be1e8772e86a9e15bc4e0dbc9f739b31bb
+  languageName: node
+  linkType: hard
+
 "d3-path@npm:^3.1.0":
   version: 3.1.0
   resolution: "d3-path@npm:3.1.0"
@@ -5434,7 +5521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-scale-chromatic@npm:^3.1.0":
+"d3-scale-chromatic@npm:1 - 3, d3-scale-chromatic@npm:^3.1.0":
   version: 3.1.0
   resolution: "d3-scale-chromatic@npm:3.1.0"
   dependencies:
@@ -5444,7 +5531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-scale@npm:^4.0.2":
+"d3-scale@npm:1 - 4, d3-scale@npm:^4.0.2":
   version: 4.0.2
   resolution: "d3-scale@npm:4.0.2"
   dependencies:
@@ -5454,6 +5541,13 @@ __metadata:
     d3-time: 2.1.1 - 3
     d3-time-format: 2 - 4
   checksum: a9c770d283162c3bd11477c3d9d485d07f8db2071665f1a4ad23eec3e515e2cefbd369059ec677c9ac849877d1a765494e90e92051d4f21111aa56791c98729e
+  languageName: node
+  linkType: hard
+
+"d3-selection@npm:2 - 3, d3-selection@npm:3":
+  version: 3.0.0
+  resolution: "d3-selection@npm:3.0.0"
+  checksum: f4e60e133309115b99f5b36a79ae0a19d71ee6e2d5e3c7216ef3e75ebd2cb1e778c2ed2fa4c01bef35e0dcbd96c5428f5bd6ca2184fe2957ed582fde6841cbc5
   languageName: node
   linkType: hard
 
@@ -5488,6 +5582,43 @@ __metadata:
   version: 3.0.1
   resolution: "d3-timer@npm:3.0.1"
   checksum: 1cfddf86d7bca22f73f2c427f52dfa35c49f50d64e187eb788dcad6e927625c636aa18ae4edd44d084eb9d1f81d8ca4ec305dae7f733c15846a824575b789d73
+  languageName: node
+  linkType: hard
+
+"d3-transition@npm:2 - 3":
+  version: 3.0.1
+  resolution: "d3-transition@npm:3.0.1"
+  dependencies:
+    d3-color: 1 - 3
+    d3-dispatch: 1 - 3
+    d3-ease: 1 - 3
+    d3-interpolate: 1 - 3
+    d3-timer: 1 - 3
+  peerDependencies:
+    d3-selection: 2 - 3
+  checksum: cb1e6e018c3abf0502fe9ff7b631ad058efb197b5e14b973a410d3935aead6e3c07c67d726cfab258e4936ef2667c2c3d1cd2037feb0765f0b4e1d3b8788c0ea
+  languageName: node
+  linkType: hard
+
+"d3-zoom@npm:2 - 3":
+  version: 3.0.0
+  resolution: "d3-zoom@npm:3.0.0"
+  dependencies:
+    d3-dispatch: 1 - 3
+    d3-drag: 2 - 3
+    d3-interpolate: 1 - 3
+    d3-selection: 2 - 3
+    d3-transition: 2 - 3
+  checksum: 8056e3527281cfd1ccbcbc458408f86973b0583e9dac00e51204026d1d36803ca437f970b5736f02fafed9f2b78f145f72a5dbc66397e02d4d95d4c594b8ff54
+  languageName: node
+  linkType: hard
+
+"data-joint@npm:1":
+  version: 1.3.1
+  resolution: "data-joint@npm:1.3.1"
+  dependencies:
+    index-array-by: ^1.4.0
+  checksum: 9becfaccd59ca02a4caffe6b8b9b52d4e9df8ed93dc01cd3109ef67dc406e8fc678b539f8fd62662ce9b7a1061ec3b4865ca3b4d0edf69656c0cf97f9a2c1b1a
   languageName: node
   linkType: hard
 
@@ -6414,6 +6545,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"force-graph@npm:1":
+  version: 1.43.5
+  resolution: "force-graph@npm:1.43.5"
+  dependencies:
+    "@tweenjs/tween.js": 18 - 23
+    accessor-fn: 1
+    bezier-js: 3 - 6
+    canvas-color-tracker: 1
+    d3-array: 1 - 3
+    d3-drag: 2 - 3
+    d3-force-3d: 2 - 3
+    d3-scale: 1 - 4
+    d3-scale-chromatic: 1 - 3
+    d3-selection: 2 - 3
+    d3-zoom: 2 - 3
+    index-array-by: 1
+    kapsule: ^1.14
+    lodash-es: 4
+  checksum: 3dda412c1515c6d7572eb96f43c742e04d027ffbaadd439aaffed9982b6b5cef43a42b9a98c5c7b848b8a643b4af3c86f862ab9d4b9d69e13512acc470a907a1
+  languageName: node
+  linkType: hard
+
 "foreground-child@npm:^3.1.0":
   version: 3.2.1
   resolution: "foreground-child@npm:3.2.1"
@@ -6439,6 +6592,13 @@ __metadata:
   version: 3.1.0
   resolution: "free-style@npm:3.1.0"
   checksum: 949258ae315deda48cac93ecd5f9a80f36e8a027e19ce2103598dc8d5ab60e963bbad5444b2a4990ddb746798dd188896f430285cf484afbf2141f7d75a191d8
+  languageName: node
+  linkType: hard
+
+"fromentries@npm:^1.3.2":
+  version: 1.3.2
+  resolution: "fromentries@npm:1.3.2"
+  checksum: 33729c529ce19f5494f846f0dd4945078f4e37f4e8955f4ae8cc7385c218f600e9d93a7d225d17636c20d1889106fd87061f911550861b7072f53bf891e6b341
   languageName: node
   linkType: hard
 
@@ -7019,6 +7179,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"index-array-by@npm:1, index-array-by@npm:^1.4.0":
+  version: 1.4.2
+  resolution: "index-array-by@npm:1.4.2"
+  checksum: 520c79815fa0048f2edd29df5be54584e271aae85a4417a0388b34f60e9edf52f7127b0c73bdd3d45d2e00b2d6653f00f9a2e5de434003061b9360e5aa54c18d
+  languageName: node
+  linkType: hard
+
 "inflight@npm:^1.0.4":
   version: 1.0.6
   resolution: "inflight@npm:1.0.6"
@@ -7445,6 +7612,13 @@ __metadata:
   bin:
     jake: bin/cli.js
   checksum: f2dc4a086b4f58446d02cb9be913c39710d9ea570218d7681bb861f7eeaecab7b458256c946aeaa7e548c5e0686cc293e6435501e4047174a3b6a504dcbfcaae
+  languageName: node
+  linkType: hard
+
+"jerrypick@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "jerrypick@npm:1.1.1"
+  checksum: 8c247a4a7b5a6ece961cbc1ec0a0c76ca8009f5873a0fe26c4c367e4f3cf1cd7aa994c50442338b6d5d4394b1ba725f0acbe88293e0f9e11659dea86260139bf
   languageName: node
   linkType: hard
 
@@ -8123,6 +8297,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kapsule@npm:1, kapsule@npm:^1.14":
+  version: 1.14.5
+  resolution: "kapsule@npm:1.14.5"
+  dependencies:
+    lodash-es: 4
+  checksum: 1208d7a172aa1b46ac35bb993be808b3cc8f5bc52967a6593ac34582a08ef83cedd669ca95a1ce2d1e29053234b20b4d98ba547288866244bdd9a128df7384e8
+  languageName: node
+  linkType: hard
+
 "keyv@npm:^4.5.3":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -8251,7 +8434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
+"lodash-es@npm:4, lodash-es@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
@@ -8718,6 +8901,47 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ngraph.events@npm:^1.0.0, ngraph.events@npm:^1.2.1":
+  version: 1.2.2
+  resolution: "ngraph.events@npm:1.2.2"
+  checksum: 358d312ebdf8eeddfac9741938f38cb7fe488b402641900613f632fe81fe63da92543db050c659e5a7dc7c28750b1109ce4d78cc9d68e66d732fba7128efbbc2
+  languageName: node
+  linkType: hard
+
+"ngraph.forcelayout@npm:3":
+  version: 3.3.1
+  resolution: "ngraph.forcelayout@npm:3.3.1"
+  dependencies:
+    ngraph.events: ^1.0.0
+    ngraph.merge: ^1.0.0
+    ngraph.random: ^1.0.0
+  checksum: 580ab50debd7cf03bae7752337496f45158a8808a6494df71080a28c5f047fa146d53daf5635ed22bb06cc95b06b217e3c104fe2071d8e5beb036c7697871b7d
+  languageName: node
+  linkType: hard
+
+"ngraph.graph@npm:20":
+  version: 20.0.1
+  resolution: "ngraph.graph@npm:20.0.1"
+  dependencies:
+    ngraph.events: ^1.2.1
+  checksum: 16e42c4c4fdabf8243b42291c8c5bf5baa0614773d62edf911b86ef2aa9f60a38e107a9d1bb97ab6feac2ac514c8e04a0aa24d1992502b21420fdd5f563c96cb
+  languageName: node
+  linkType: hard
+
+"ngraph.merge@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "ngraph.merge@npm:1.0.0"
+  checksum: e4ad9e55acec7704229f56e7d6157b17a9d87736efdbd2cee6c3fab92cffb99e94b3d8e2e5e75f863f4fe972192a2bff1381e58334115d7c9c08b55b1673801f
+  languageName: node
+  linkType: hard
+
+"ngraph.random@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "ngraph.random@npm:1.1.0"
+  checksum: 926ed86450d2fc983aea92e22f595bf064c45d90e5efbf4bd85f14e825253c9e01417ef1357da0875691ccb61ec411443a7c8e1ec10885f2eb841366b3bd7960
+  languageName: node
+  linkType: hard
+
 "nice-try@npm:^1.0.4":
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
@@ -9171,6 +9395,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"polished@npm:4":
+  version: 4.3.1
+  resolution: "polished@npm:4.3.1"
+  dependencies:
+    "@babel/runtime": ^7.17.8
+  checksum: a6f863c23f1d2f3f5cda3427b5885c9fb9e83b036d681e24820b143c7df40d2685bebb01c0939767120a28e1183671ae17c93db82ac30b3c20942180bb153bc7
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -9343,7 +9576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:15, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9417,6 +9650,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-force-graph-2d@npm:^1.25.5":
+  version: 1.25.5
+  resolution: "react-force-graph-2d@npm:1.25.5"
+  dependencies:
+    force-graph: 1
+    prop-types: 15
+    react-kapsule: 2
+  peerDependencies:
+    react: "*"
+  checksum: 6ef73e4f3ec842307dd6447b1609da7e87497373f871ecfd805a1648aacb4cdfc9115a1d6a33afe9e768553ef7840b865083d3263f32336e4666b380189a1a9a
+  languageName: node
+  linkType: hard
+
+"react-force-graph-3d@npm:^1.24.3":
+  version: 1.24.3
+  resolution: "react-force-graph-3d@npm:1.24.3"
+  dependencies:
+    3d-force-graph: ^1.73
+    prop-types: 15
+    react-kapsule: 2
+  peerDependencies:
+    react: "*"
+  checksum: 5493482907b40af4b81a5d2e1b2de47c15f9ba607e30d791a1fe21df5da5af591d0ab004850ee1bf7197fd849119e235447db154fb1d62af4f98139ea9b407cd
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -9428,6 +9687,18 @@ __metadata:
   version: 18.3.1
   resolution: "react-is@npm:18.3.1"
   checksum: e20fe84c86ff172fc8d898251b7cc2c43645d108bf96d0b8edf39b98f9a2cae97b40520ee7ed8ee0085ccc94736c4886294456033304151c3f94978cec03df21
+  languageName: node
+  linkType: hard
+
+"react-kapsule@npm:2":
+  version: 2.4.0
+  resolution: "react-kapsule@npm:2.4.0"
+  dependencies:
+    fromentries: ^1.3.2
+    jerrypick: ^1.1.1
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: 8d9af1c8e3329991a90cb5f2a6e64ee0085016e00de7783a58c6a95089ff710a07c0acaf6b2b6b4d393802e9448e7263f3324486f1358926706e8075e7d5cd3a
   languageName: node
   linkType: hard
 
@@ -10608,6 +10879,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"three-forcegraph@npm:1":
+  version: 1.41.14
+  resolution: "three-forcegraph@npm:1.41.14"
+  dependencies:
+    accessor-fn: 1
+    d3-array: 1 - 3
+    d3-force-3d: 2 - 3
+    d3-scale: 1 - 4
+    d3-scale-chromatic: 1 - 3
+    data-joint: 1
+    kapsule: 1
+    ngraph.forcelayout: 3
+    ngraph.graph: 20
+    tinycolor2: 1
+  peerDependencies:
+    three: ">=0.118.3"
+  checksum: 3056e51ed2c363902747f6a368381f8e667c443faebd8dd4057c3bc649086b3ddefeba9f89425e575803b9fb4f83b03b7f5dae8b276a518f3b53544bb410f9bf
+  languageName: node
+  linkType: hard
+
+"three-render-objects@npm:^1.29":
+  version: 1.29.4
+  resolution: "three-render-objects@npm:1.29.4"
+  dependencies:
+    "@tweenjs/tween.js": 18 - 23
+    accessor-fn: 1
+    kapsule: 1
+    polished: 4
+  peerDependencies:
+    three: "*"
+  checksum: a8098198d9fe1199cfd3352300522a75d8b0ce176340d20d2328ba0eef14c63d9dfa032c239e8b78e73da233f741bc18d0e1e39d802ba10bf2a4b6b71d21330d
+  languageName: node
+  linkType: hard
+
+"three@npm:>=0.118 <1":
+  version: 0.167.1
+  resolution: "three@npm:0.167.1"
+  checksum: 4500a7eb16dc9143f0e71b11c4886d003f31cd8e4cd4e755a045afbcdce0f3f9cec47ab1c9d00eb45fa2bb3ace6ef17b105eee93b90b15b43f0af1139db8741d
+  languageName: node
+  linkType: hard
+
+"tinycolor2@npm:1, tinycolor2@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "tinycolor2@npm:1.6.0"
+  checksum: 6df4d07fceeedc0a878d7bac47e2cd47c1ceeb1078340a9eb8a295bc0651e17c750f73d47b3028d829f30b85c15e0572c0fd4142083e4c21a30a597e47f47230
+  languageName: node
+  linkType: hard
+
 "tmpl@npm:1.0.5":
   version: 1.0.5
   resolution: "tmpl@npm:1.0.5"
@@ -10760,6 +11079,7 @@ __metadata:
     "@jupyterlab/launcher": ^4.2.4
     "@jupyterlab/services": ^7.0.0
     "@jupyterlab/testutils": ^4.0.0
+    "@jupyterlab/ui-components": ^4.2.4
     "@lumino/widgets": ^2.4.0
     "@types/jest": ^29.2.0
     "@types/json-schema": ^7.0.11
@@ -10775,6 +11095,8 @@ __metadata:
     mkdirp: ^1.0.3
     npm-run-all: ^4.1.5
     prettier: ^3.0.0
+    react-force-graph-2d: ^1.25.5
+    react-force-graph-3d: ^1.24.3
     rimraf: ^5.0.1
     source-map-loader: ^1.0.2
     style-loader: ^3.3.1
