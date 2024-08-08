@@ -1,0 +1,50 @@
+.layout {
+  display: grid;
+  grid-template:
+    'search-bar tree-view info-box' auto
+    'ontology-graph ontology-graph info-box' 1fr
+    'ontology-graph ontology-graph workspace' 1fr / 1fr 1fr 1fr;
+  height: 90vh;
+  gap: 10px;
+  background-color: white;
+}
+
+.search-bar {
+  grid-area: search-bar;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+}
+
+.tree-view {
+  grid-area: tree-view;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+}
+
+.ontology-graph {
+  grid-area: ontology-graph;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+}
+
+.info-box {
+  grid-area: info-box;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+}
+
+.workspace {
+  grid-area: workspace;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+}

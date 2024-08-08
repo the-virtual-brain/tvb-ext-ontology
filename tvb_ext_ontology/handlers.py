@@ -27,7 +27,27 @@ class NodeHandler(APIHandler):
             return
 
         onto_api = OntologyAPI()
-        node_data = onto_api.get_node_by_label(label)
+        node_data = onto_api.query_nodes(label)
+        if not node_data:
+            self.set_status(404)
+            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            return
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(node_data))
+
+
+class NodeConnectionsHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        label = self.get_argument('label', None)
+        if not label:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Missing 'label' parameter"}))
+            return
+
+        onto_api = OntologyAPI()
+        node_data = onto_api.expand_node_relationships(label)
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -43,9 +63,11 @@ def setup_handlers(web_app):
     base_url = web_app.settings["base_url"]
     route_pattern = url_path_join(base_url, "tvb-ext-ontology", "get-example")
     node_pattern = url_path_join(base_url, "tvb-ext-ontology", "node")
+    node_connections_pattern = url_path_join(base_url, "tvb-ext-ontology", "node-connections")
 
     handlers = [
         (route_pattern, RouteHandler),
-        (node_pattern, NodeHandler)
+        (node_pattern, NodeHandler),
+        (node_connections_pattern, NodeConnectionsHandler)
     ]
     web_app.add_handlers(host_pattern, handlers)

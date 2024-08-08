@@ -48,6 +48,16 @@ export async function requestAPI<T>(
 export async function fetchNodeByLabel(label: string): Promise<void> {
   try {
     const response = await requestAPI<any>(`node?label=${label}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching node data: ${error}`);
+  }
+}
+
+export async function fetchNodeConnections(label: string): Promise<void> {
+  try {
+    const response = await requestAPI<any>(`node-connections?label=${label}`);
+    console.log('Label from handler.ts: ', label);
     console.log('Response from handlers.ts: ', response);
     console.log(typeof response);
     return response;
