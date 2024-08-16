@@ -1,39 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import '../style/layout.css';
-import { OntologyWidgetComponent } from './OntologyWidget';
-import TreeViewComponent from './components/TreeView';
-import SeachBarComponent from './components/SearchBar';
+import { GraphViewComponent } from './components/GaphView';
 import InfoBoxComponent from './components/InfoBox';
 import WorkspaceComponent from './components/Workspace';
+import { ISelectedNodeType } from './components/interfaces/InfoBoxInterfaces';
+import { IWorkspaceState } from './components/interfaces/WorkspaceInterfaces';
 
 interface IAppProps {
   fetchData: () => Promise<any>;
 }
 
-const App: React.FC<IAppProps> = ({ fetchData }) => {
-  const [data, setData] = useState(null);
+const App: React.FC<IAppProps> = () => {
+  const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(null);
 
-  useEffect(() => {
-    const fetchAndSetData = async () => {
-      try {
-        const result = await fetchData();
-        setData(result);
-        console.log(data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
+  const [workspace, setWorkspace] = useState<IWorkspaceState>({
+    model: null,
+    connectivity: null,
+    coupling: null,
+    noise: null,
+    integrationMethod: null
+  });
+
+  const addToWorkspace = (node: ISelectedNodeType) => {
+    setWorkspace(prevWorkspace => {
+      switch (node.type) {
+        case 'Neural Mass Model':
+          return { ...prevWorkspace, model: node };
+        case 'TheVirtualBrain':
+          if (node.label.includes('Noise')) {
+            return { ...prevWorkspace, noise: node };
+          } else {
+            return { ...prevWorkspace, connectivity: node };
+          }
+        case 'Coupling':
+          return { ...prevWorkspace, coupling: node };
+        case 'Integrator':
+          return { ...prevWorkspace, integrationMethod: node };
+        default:
+          return prevWorkspace; // No changes if the type doesn't match
       }
-    };
-
-    fetchAndSetData();
-  }, [fetchData]);
+    });
+  };
 
   return (
     <div className="layout">
-      <SeachBarComponent />
-      <TreeViewComponent />
-      <InfoBoxComponent />
-      <WorkspaceComponent />
-      <OntologyWidgetComponent fetchData={fetchData} />
+      <InfoBoxComponent selectedNode={selectedNode} addToWorkspace={addToWorkspace} />
+      <WorkspaceComponent workspace={workspace} />
+      <GraphViewComponent setSelectedNode={setSelectedNode} />
     </div>
   );
 };

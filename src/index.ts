@@ -3,7 +3,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { fetchNodeByLabel, fetchNodeConnections } from './handler';
+import { fetchNodeByLabel } from './handler';
 import { ILauncher } from '@jupyterlab/launcher';
 import { LabIcon } from '@jupyterlab/ui-components';
 

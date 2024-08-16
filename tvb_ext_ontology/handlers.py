@@ -5,6 +5,8 @@ from jupyter_server.utils import url_path_join
 import tornado
 from tvbo.api.ontology_api import OntologyAPI
 
+onto_api = OntologyAPI()
+
 
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
@@ -26,8 +28,8 @@ class NodeHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
 
-        onto_api = OntologyAPI()
-        node_data = onto_api.query_nodes(label)
+        node_data = onto_api.get_node_by_label(label)
+        print(f'Links: {node_data["links"]}')
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -46,8 +48,11 @@ class NodeConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
 
-        onto_api = OntologyAPI()
-        node_data = onto_api.expand_node_relationships(label)
+        onto_api.expand_node_relationships(label)
+        nodes = onto_api.nodes
+        links = onto_api.edges
+        node_data = {'nodes': nodes, 'links': links}
+        print(f'Connections links: {node_data["links"]}')
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
