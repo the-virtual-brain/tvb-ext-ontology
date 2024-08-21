@@ -1,6 +1,7 @@
 import { URLExt } from '@jupyterlab/coreutils';
 
 import { ServerConnection } from '@jupyterlab/services';
+import { ILinkType, INodeType } from './components/interfaces/GraphViewInterfaces';
 
 /**
  * Call the API extension
@@ -45,13 +46,21 @@ export async function requestAPI<T>(
   return data;
 }
 
-export async function fetchNodeByLabel(label: string): Promise<void> {
+export async function fetchNodeByLabel(label: string): Promise<any> {
   try {
     const response = await requestAPI<any>(`node?label=${label}`);
-    console.log('Response from handlers.ts: ', response);
-    console.log(typeof response);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
+  }
+}
+
+export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] } | null> {
+  try {
+    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-connections?label=${label}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching node data: ${error}`);
+    return null;
   }
 }

@@ -4,11 +4,11 @@ import {
 } from '@jupyterlab/application';
 
 import { fetchNodeByLabel } from './handler';
-import { OntologyWidget } from './OntologyWidget';
 import { ILauncher } from '@jupyterlab/launcher';
 import { LabIcon } from '@jupyterlab/ui-components';
 
 import ontologyIconSVG from '../style/tvbo_favicon.svg';
+import { AppWidget } from './AppWidget';
 
 const ontologyIcon = new LabIcon({
   name: 'custom:ontology-icon',
@@ -32,9 +32,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
       label: 'Ontology Widget',
       icon: ontologyIcon,
       execute: () => {
-        const widget = new OntologyWidget(() =>
-          fetchNodeByLabel('example-label')
-        );
+        // const widget = new OntologyWidget(() =>
+        const widget = new AppWidget(() => fetchNodeByLabel('JansenRit'));
         widget.id = 'tvb-ext-ontology-widget';
         widget.title.label = 'Ontology Graph';
         widget.title.closable = true;
