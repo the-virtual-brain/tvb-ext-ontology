@@ -27,6 +27,7 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
 
   return (
     <div className="info-box">
+      <h3>Concept Details</h3>
       {selectedNode ? (
         <div>
           <h3>Node Information</h3>

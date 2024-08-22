@@ -1,5 +1,5 @@
 export interface INodeType {
-  id: number;
+  id: string;
   label: string;
   type: string;
   definition: string;
@@ -7,11 +7,12 @@ export interface INodeType {
   x?: number;
   y?: number;
   collapsed?: boolean;
+  childNodes?: INodeType[];
   childLinks?: ILinkType[];
 }
 
 export interface ILinkType {
-  source: number;
-  target: number;
+  source: string;
+  target: string;
   type: string;
 }

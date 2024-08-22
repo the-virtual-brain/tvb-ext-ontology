@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
-import { fetchNodeByLabel, fetchNodeConnections } from '../handler';
+import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 import { ILinkType, INodeType } from './interfaces/GraphViewInterfaces';
 import { ITreeNode } from './interfaces/TreeViewInterfaces';
@@ -33,7 +33,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   }, [searchLabel]);
 
   const buildTree = (currentNode: INodeType): ITreeNode => {
-    const nodeMap = new Map<number, ITreeNode>();
+    const nodeMap = new Map<string, ITreeNode>();
 
     // Initialize parents and children for all nodes in graph
     data.nodes.forEach(node => {
@@ -45,17 +45,13 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
         parents: []
       });
     });
-    console.log(nodeMap);
 
     const currentTreeNode = nodeMap.get(currentNode.id)!;
 
     // Get parents and children
     data.links.forEach(link => {
-      console.log('Link: ', link);
       const sourceNode = nodeMap.get(link.source);
       const targetNode = nodeMap.get(link.target);
-      console.log('Source Node: ', sourceNode);
-      console.log('Target Node: ', targetNode);
 
       if (sourceNode && targetNode) {
         if (link.target === currentNode.id) {
@@ -81,38 +77,55 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       type: node.type,
       definition: node.definition,
       iri: node.iri,
+      childNodes: node.childNodes,
       childLinks: node.childLinks,
       collapsed: false
     });
-    console.log('Node clicked');
+    console.log('Node clicked: ', node);
+    node.collapsed = !node.collapsed;
 
     // Build the tree view for the clicked node
     const tree = buildTree(node);
     setTreeData(tree);
 
-    const connections = await fetchNodeConnections(node.label);
+    const connections = await fetchNodeChildren(node.label, node.id);
+    console.log('GraphView connections: ', connections);
+    node.childNodes = connections.nodes;
+    node.childLinks = connections.links;
+    console.log(node.childNodes);
+    console.log(node.childLinks);
 
-    const nodesById = Object.fromEntries(
-      data.nodes.map(node => [node.id, node])
-    );
+    const visibleNodes: INodeType[] = [];
+    const visibleLinks: ILinkType[] = [];
+    let newNodes: INodeType[] = [];
+    let newLinks: ILinkType[] = [];
+    const visitedIds: string[] = [];
 
-    // link parent/children
-    data.nodes.forEach(n => {
-      n.collapsed = n.id !== node.id;
-      n.childLinks = [];
-    });
+    for (const n of data.nodes) {
+      visitedIds.push(n.id);
+    }
 
-    connections!.links.forEach(link => {
-      const sourceNode = nodesById[link.source];
-      if (sourceNode) {
-        sourceNode.childLinks!.push(link);
-      } else {
-        console.error(
-          `Node with id ${link.source} does not exist in nodesById`
-        );
+    const processNode = (n: INodeType) => {
+      console.log('PROCESSING NODE: ', n);
+      if (!visitedIds.includes(n.id)) {
+        visitedIds.push(n.id);
+        visibleNodes.push(n);
       }
-    });
-    data.nodes = Object.values(nodesById);
+      if (!n.collapsed) {
+        visibleLinks.push(...n.childLinks!);
+        for (const childNode of n.childNodes!) {
+          processNode(childNode);
+        }
+      } else {
+        return;
+      }
+    };
+
+    processNode(node);
+    newNodes = [...data.nodes, ...visibleNodes];
+    newLinks = [...data.links, ...visibleLinks];
+    console.log(newNodes);
+    setData({ nodes: newNodes, links: newLinks });
   };
 
   // Handle search

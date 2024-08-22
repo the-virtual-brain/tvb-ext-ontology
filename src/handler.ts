@@ -46,21 +46,32 @@ export async function requestAPI<T>(
   return data;
 }
 
-export async function fetchNodeByLabel(label: string): Promise<any> {
+export async function fetchNodeByLabel(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<any>(`node?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
+    return { nodes: [], links: []};
   }
 }
 
-export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] } | null> {
+export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-connections?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
-    return null;
+    return { nodes: [], links: [] };
+  }
+}
+
+export async function fetchNodeChildren(label: string, id: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+  try {
+    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-children-connections?label=${label}&id=${id}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching node data: ${error}`);
+    return { nodes: [], links: [] };
   }
 }
