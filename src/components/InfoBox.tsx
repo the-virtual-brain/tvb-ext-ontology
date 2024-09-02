@@ -3,6 +3,7 @@ import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 
 interface IInfoBoxProps {
   selectedNode: {
+    id: string;
     label: string;
     type: string;
     definition: string;
@@ -16,12 +17,8 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
   addToWorkspace
 }) => {
   // Valid types for adding objects to workspace
-  const validTypes = [
-    'Neural Mass Model',
-    'TheVirtualBrain', // TODO: change to actual type for connectivity, noise
-    'Coupling',
-    'Integrator'
-  ];
+  // TODO: add valid type for connectivity
+  const validTypes = ['Neural Mass Model', 'Noise', 'Coupling', 'Integrator'];
 
   const isAddable = selectedNode && validTypes.includes(selectedNode.type);
 
@@ -30,28 +27,33 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
       <h3>Concept Details</h3>
       {selectedNode ? (
         <div>
-          <h3>Node Information</h3>
-          <p>
-            <strong>Name:</strong> {selectedNode.label}
-          </p>
-          <p>
-            <strong>Type:</strong> {selectedNode.type}
-          </p>
-          <p>
-            <strong>Definition:</strong> {selectedNode.definition}
-          </p>
-          <p>
-            <strong>IRI:</strong>{' '}
-            <a href={selectedNode.iri} target="_blank" rel="noopener noreferrer">
-              {selectedNode.iri}
-            </a>
-          </p>
-          <button
-            onClick={() => addToWorkspace(selectedNode)}
-            disabled={!isAddable}
-          >
-            Add to Workspace
-          </button>
+          <div className="node-info-container">
+            <div className="node-info">
+              <h3>Node Information</h3>
+              <p>
+                <strong>Name:</strong> {selectedNode.label}
+              </p>
+              <p>
+                <strong>Type:</strong> {selectedNode.type}
+              </p>
+              <p>
+                <strong>Definition:</strong> {selectedNode.definition}
+              </p>
+              <p>
+                <strong>IRI:</strong>{' '}
+                <a href={selectedNode.iri} target="_blank" rel="noopener noreferrer">
+                  {selectedNode.iri}
+                </a>
+              </p>
+            </div>
+            <button
+              className="add-button"
+              onClick={() => addToWorkspace(selectedNode)}
+              disabled={!isAddable}
+            >
+              Add to Workspace
+            </button>
+          </div>
         </div>
       ) : (
         <p>Select a node to see its details here</p>

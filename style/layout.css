@@ -1,10 +1,10 @@
 .layout {
   display: grid;
   grid-template:
-    'tree-view tree-view info-box' auto
-    'ontology-graph ontology-graph info-box' 1fr
+    'info-box info-box tree-view' 0.3fr
+    'ontology-graph ontology-graph tree-view' auto
     'ontology-graph ontology-graph workspace' 1fr / 1fr 1fr 1fr;
-  height: 90vh;
+  height: 100vh;
   gap: 10px;
   background-color: white;
 }
@@ -41,12 +41,65 @@
   background-color: whitesmoke;
 }
 
+.node-info-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.node-info {
+  flex: 1;
+}
+
+.add-button {
+  margin-top: 6px;
+  margin-left: auto; /* Aligns it to the right */
+}
+
 .workspace {
   grid-area: workspace;
   border: 1px solid #ddd;
   padding: 10px;
   overflow: auto;
   background-color: whitesmoke;
+}
+
+.export-controls {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.export-control {
+  margin-bottom: 15px;
+}
+
+.export-control label {
+  margin-right: 10px;
+}
+
+.export-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.export-button:hover {
+  background-color: #0056b3;
+}
+
+.export-button:active {
+  background-color: #004494;
 }
 
 .search-bar {
@@ -63,7 +116,7 @@
 }
 
 .search-bar button,
-.info-box button{
+.info-box button {
   margin-left: 10px;
   padding: 5px 10px;
   font-size: 16px;
@@ -75,7 +128,7 @@
 }
 
 .search-bar button:hover,
-.info-box button:hover{
+.info-box button:hover {
   background-color: #0056b3;
 }
 

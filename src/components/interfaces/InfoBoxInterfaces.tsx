@@ -1,6 +1,7 @@
 import { ILinkType, INodeType } from './GraphViewInterfaces';
 
 export interface ISelectedNodeType {
+  id: string;
   label: string;
   type: string;
   definition: string;

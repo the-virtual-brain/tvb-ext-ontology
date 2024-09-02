@@ -3,7 +3,6 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { fetchNodeByLabel } from './handler';
 import { ILauncher } from '@jupyterlab/launcher';
 import { LabIcon } from '@jupyterlab/ui-components';
 
@@ -33,7 +32,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       icon: ontologyIcon,
       execute: () => {
         // const widget = new OntologyWidget(() =>
-        const widget = new AppWidget(() => fetchNodeByLabel('JansenRit'));
+        const widget = new AppWidget();
         widget.id = 'tvb-ext-ontology-widget';
         widget.title.label = 'Ontology Graph';
         widget.title.closable = true;
@@ -47,8 +46,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     launcher.add({
       command: commandID,
-      category: 'Widgets',
-      rank: 0
+      category: 'Other',
+      rank: 4
     });
   }
 };
