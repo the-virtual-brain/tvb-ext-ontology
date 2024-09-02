@@ -17,14 +17,15 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
   useEffect(() => {
     if (!selectedNode) {
-      setParents([]);
-      setChildren([]);
       return;
     }
+    // clear the lists every time a new node is selected
+    setParents([]);
+    setChildren([]);
 
     const fetchAndSetParents = async () => {
       try {
-        const { nodes, links } = await fetchNodeParents(selectedNode.label, selectedNode.id); // Fetch raw data
+        const { nodes, links } = await fetchNodeParents(selectedNode.label, selectedNode.id);
         const parentData = processNodeRelations(nodes, links, selectedNode.id, 'parents');
         setParents(parentData);
       } catch (error) {
@@ -34,7 +35,7 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
     const fetchAndSetChildren = async () => {
       try {
-        const { nodes, links } = await fetchNodeChildren(selectedNode.label, selectedNode.id); // Fetch raw data
+        const { nodes, links } = await fetchNodeChildren(selectedNode.label, selectedNode.id);
         const childData = processNodeRelations(nodes, links, selectedNode.id, 'children');
         setChildren(childData);
       } catch (error) {

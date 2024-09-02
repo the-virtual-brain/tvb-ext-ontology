@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
@@ -13,6 +13,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 }) => {
   const [data, setData] = useState<{ nodes: INodeType[]; links: ILinkType[]; }>({ nodes: [], links: [] });
   const [searchLabel, setSearchLabel] = useState<string>('');
+  const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
+  const NODE_RADIUS = 4;
 
   useEffect(() => {
     const fetchAndSetData = async (label?: string) => {
@@ -40,6 +42,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       childLinks: node.childLinks,
       collapsed: false
     });
+    setHighlightNode(node);
     console.log('Node clicked: ', node);
     node.collapsed = !node.collapsed;
 
@@ -77,6 +80,20 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     newLinks = [...data.links, ...visibleLinks];
     setData({ nodes: newNodes, links: newLinks });
   };
+
+  // highlight selected node
+  const paintRing = useCallback(
+    (node: INodeType, ctx: CanvasRenderingContext2D) => {
+      if (highlightNode && node.id === highlightNode.id) {
+        ctx.beginPath();
+        ctx.arc(node.x as number, node.y as number, NODE_RADIUS, 0, 2 * Math.PI, false);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    },
+    [highlightNode]
+  );
 
   // Handle search
   const handleSearch = () => {
@@ -121,8 +138,10 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
               const xCoord = node.x as number;
               const yCoord = node.y as number;
               ctx.fillText(label, xCoord, yCoord + 5);
+
+              paintRing(node, ctx);
             }}
-            nodeCanvasObjectMode={() => 'after'}
+            nodeCanvasObjectMode={(node) => (highlightNode && node.id === highlightNode.id ? 'before' : 'after')}
             linkDirectionalArrowLength={3.5}
             linkDirectionalArrowRelPos={1}
           />
