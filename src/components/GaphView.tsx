@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import ForceGraph2D from 'react-force-graph-2d';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
 import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 import { ILinkType, INodeType } from './interfaces/GraphViewInterfaces';
@@ -15,6 +15,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   const [searchLabel, setSearchLabel] = useState<string>('');
   const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
   const NODE_RADIUS = 4;
+  const fgRef = useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAndSetData = async (label?: string) => {
@@ -109,6 +111,14 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     }
   };
 
+  // for graph centering when it is first rendered
+  useEffect(() => {
+    if (fgRef.current && data.nodes.length > 0 && isInitialRender) {
+      fgRef.current.centerAt(75, 75);
+      setIsInitialRender(false);
+    }
+  }, [data, isInitialRender]);
+
   return (
     <div className="ontology-graph">
       <div className="search-bar">
@@ -121,9 +131,10 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      <div>
+      <div className="graph-container">
         {data ? (
           <ForceGraph2D
+            ref={fgRef}
             graphData={data}
             onNodeClick={handleNodeClick}
             linkCurvature={0.15}

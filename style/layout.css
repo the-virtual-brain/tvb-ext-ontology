@@ -4,7 +4,7 @@
     'info-box info-box tree-view' 0.3fr
     'ontology-graph ontology-graph tree-view' auto
     'ontology-graph ontology-graph workspace' 1fr / 1fr 1fr 1fr;
-  height: 100vh;
+  height: 100%;
   gap: 10px;
   background-color: white;
 }
@@ -29,8 +29,19 @@
   grid-area: ontology-graph;
   border: 1px solid #ddd;
   padding: 10px;
-  overflow: auto;
+  overflow: hidden;
   background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.graph-container {
+  overflow: hidden;
+  border-radius: 5px;
+  box-sizing: border-box;
+  flex: 1;
 }
 
 .info-box {
