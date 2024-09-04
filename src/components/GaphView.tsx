@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import ForceGraph2D from 'react-force-graph-2d';
-import { fetchNodeByLabel, fetchNodeConnections } from '../handler';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
+import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 import { ILinkType, INodeType } from './interfaces/GraphViewInterfaces';
-import { ITreeNode } from './interfaces/TreeViewInterfaces';
-import TreeViewComponent from './TreeView';
 
 interface IGraphViewProps {
   setSelectedNode: (node: ISelectedNodeType) => void;
@@ -15,7 +13,10 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 }) => {
   const [data, setData] = useState<{ nodes: INodeType[]; links: ILinkType[]; }>({ nodes: [], links: [] });
   const [searchLabel, setSearchLabel] = useState<string>('');
-  const [treeData, setTreeData] = useState<ITreeNode | null>(null);
+  const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
+  const NODE_RADIUS = 4;
+  const fgRef = useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAndSetData = async (label?: string) => {
@@ -32,88 +33,69 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     fetchAndSetData(searchLabel);
   }, [searchLabel]);
 
-  const buildTree = (currentNode: INodeType): ITreeNode => {
-    const nodeMap = new Map<number, ITreeNode>();
-
-    // Initialize parents and children for all nodes in graph
-    data.nodes.forEach(node => {
-      nodeMap.set(node.id, {
-        id: node.id,
-        label: node.label,
-        type: node.type,
-        children: [],
-        parents: []
-      });
-    });
-    console.log(nodeMap);
-
-    const currentTreeNode = nodeMap.get(currentNode.id)!;
-
-    // Get parents and children
-    data.links.forEach(link => {
-      console.log('Link: ', link);
-      const sourceNode = nodeMap.get(link.source);
-      const targetNode = nodeMap.get(link.target);
-      console.log('Source Node: ', sourceNode);
-      console.log('Target Node: ', targetNode);
-
-      if (sourceNode && targetNode) {
-        if (link.target === currentNode.id) {
-          currentTreeNode.parents.push(sourceNode);
-        } else if (link.source === currentNode.id) {
-          currentTreeNode.children.push(targetNode);
-        }
-
-        // Handle cases where a child node is also connected to the parents
-        if (currentTreeNode.parents.includes(targetNode) && currentTreeNode.children.includes(sourceNode)) {
-          sourceNode.parents.push(targetNode);
-          targetNode.children.push(sourceNode);
-        }
-      }
-    });
-
-    return currentTreeNode;
-  };
-
   const handleNodeClick = async (node: INodeType) => {
     setSelectedNode({
+      id: node.id,
       label: node.label,
       type: node.type,
       definition: node.definition,
       iri: node.iri,
+      childNodes: node.childNodes,
       childLinks: node.childLinks,
       collapsed: false
     });
-    console.log('Node clicked');
+    setHighlightNode(node);
+    console.log('Node clicked: ', node);
+    node.collapsed = !node.collapsed;
 
-    // Build the tree view for the clicked node
-    const tree = buildTree(node);
-    setTreeData(tree);
+    const connections = await fetchNodeChildren(node.label, node.id);
+    node.childNodes = connections.nodes;
+    node.childLinks = connections.links;
 
-    const connections = await fetchNodeConnections(node.label);
+    const visibleNodes: INodeType[] = [];
+    const visibleLinks: ILinkType[] = [];
+    let newNodes: INodeType[] = [];
+    let newLinks: ILinkType[] = [];
+    const visitedIds: string[] = [];
 
-    const nodesById = Object.fromEntries(
-      data.nodes.map(node => [node.id, node])
-    );
+    for (const n of data.nodes) {
+      visitedIds.push(n.id);
+    }
 
-    // link parent/children
-    data.nodes.forEach(n => {
-      n.collapsed = n.id !== node.id;
-      n.childLinks = [];
-    });
-
-    connections!.links.forEach(link => {
-      const sourceNode = nodesById[link.source];
-      if (sourceNode) {
-        sourceNode.childLinks!.push(link);
-      } else {
-        console.error(
-          `Node with id ${link.source} does not exist in nodesById`
-        );
+    const processNode = (n: INodeType) => {
+      if (!visitedIds.includes(n.id)) {
+        visitedIds.push(n.id);
+        visibleNodes.push(n);
       }
-    });
-    data.nodes = Object.values(nodesById);
+      if (!n.collapsed) {
+        visibleLinks.push(...n.childLinks!);
+        for (const childNode of n.childNodes!) {
+          processNode(childNode);
+        }
+      } else {
+        return;
+      }
+    };
+
+    processNode(node);
+    newNodes = [...data.nodes, ...visibleNodes];
+    newLinks = [...data.links, ...visibleLinks];
+    setData({ nodes: newNodes, links: newLinks });
   };
+
+  // highlight selected node
+  const paintRing = useCallback(
+    (node: INodeType, ctx: CanvasRenderingContext2D) => {
+      if (highlightNode && node.id === highlightNode.id) {
+        ctx.beginPath();
+        ctx.arc(node.x as number, node.y as number, NODE_RADIUS, 0, 2 * Math.PI, false);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    },
+    [highlightNode]
+  );
 
   // Handle search
   const handleSearch = () => {
@@ -129,9 +111,16 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     }
   };
 
+  // for graph centering when it is first rendered
+  useEffect(() => {
+    if (fgRef.current && data.nodes.length > 0 && isInitialRender) {
+      fgRef.current.centerAt(75, 75);
+      setIsInitialRender(false);
+    }
+  }, [data, isInitialRender]);
+
   return (
     <div className="ontology-graph">
-      <TreeViewComponent treeData={treeData} />
       <div className="search-bar">
         <input
           type="text"
@@ -142,12 +131,13 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      <div>
+      <div className="graph-container">
         {data ? (
           <ForceGraph2D
+            ref={fgRef}
             graphData={data}
             onNodeClick={handleNodeClick}
-            linkCurvature={0.25}
+            linkCurvature={0.15}
             nodeCanvasObject={(node, ctx, globalScale) => {
               const label = node.label;
               const fontSize = 12 / globalScale;
@@ -159,13 +149,15 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
               const xCoord = node.x as number;
               const yCoord = node.y as number;
               ctx.fillText(label, xCoord, yCoord + 5);
+
+              paintRing(node, ctx);
             }}
-            nodeCanvasObjectMode={() => 'after'}
+            nodeCanvasObjectMode={(node) => (highlightNode && node.id === highlightNode.id ? 'before' : 'after')}
             linkDirectionalArrowLength={3.5}
             linkDirectionalArrowRelPos={1}
           />
         ) : (
-          <div>Loading...</div>
+          <div>Search for a term</div>
         )}
       </div>
     </div>

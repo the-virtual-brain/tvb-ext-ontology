@@ -1,10 +1,12 @@
-import { ILinkType } from './GraphViewInterfaces';
+import { ILinkType, INodeType } from './GraphViewInterfaces';
 
 export interface ISelectedNodeType {
+  id: string;
   label: string;
   type: string;
   definition: string;
   iri: string;
-  childLinks?: ILinkType[],
+  childNodes?: INodeType[];
+  childLinks?: ILinkType[];
   collapsed?: boolean;
 }

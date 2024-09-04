@@ -1,4 +1,5 @@
 import json
+import os
 
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
@@ -29,7 +30,6 @@ class NodeHandler(APIHandler):
             return
 
         node_data = onto_api.get_node_by_label(label)
-        print(f'Links: {node_data["links"]}')
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -52,7 +52,6 @@ class NodeConnectionsHandler(APIHandler):
         nodes = onto_api.nodes
         links = onto_api.edges
         node_data = {'nodes': nodes, 'links': links}
-        print(f'Connections links: {node_data["links"]}')
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -62,6 +61,95 @@ class NodeConnectionsHandler(APIHandler):
         self.finish(json.dumps(node_data))
 
 
+class NodeChildrenConnectionsHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        label = self.get_argument('label', None)
+        id = self.get_argument('id', None)
+        if not label:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Missing 'label' parameter"}))
+            return
+        if not id:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
+            return
+        onto_api.expand_node_relationships(label)
+        node_data = onto_api.get_child_connections(id)
+        if not node_data:
+            self.set_status(404)
+            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            return
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(node_data))
+
+
+class NodeParentConnectionsHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        label = self.get_argument('label', None)
+        id = self.get_argument('id', None)
+        if not label:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Missing 'label' parameter"}))
+            return
+        if not id:
+            self.set_status(400)
+            self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
+            return
+        onto_api.expand_node_relationships(label)
+        node_data = onto_api.get_parent_connections(id)
+        print(f'node_data: {node_data}')
+        if not node_data:
+            self.set_status(404)
+            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            return
+
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(node_data))
+
+
+class ExportWorkspaceHandler(APIHandler):
+    @tornado.web.authenticated
+    def post(self):
+        try:
+            # Parse the request JSON body
+            data = json.loads(self.request.body.decode('utf-8'))
+            export_type = data.get('exportType', 'txt')
+            nodes_data = data.get('data', {})
+            filename = data.get('filename', 'workspace_export')  # Default filename if none is provided
+
+            # Ensure the filename has the correct extension
+            if not filename.endswith('.txt'):
+                filename += '.txt'
+
+            # Create the content for the file
+            content = (
+                f"Model: {nodes_data.get('model', 'None')}\n"
+                f"Connectivity: {nodes_data.get('connectivity', 'None')}\n"
+                f"Coupling: {nodes_data.get('coupling', 'None')}\n"
+                f"Noise: {nodes_data.get('noise', 'None')}\n"
+                f"Integration Method: {nodes_data.get('integrationMethod', 'None')}\n"
+            )
+
+            # Determine the save path
+            current_dir = os.getcwd()  # Get the current working directory
+            file_path = os.path.join(current_dir, filename)
+
+            # Write the content to a file in the current working directory
+            with open(file_path, 'w') as f:
+                f.write(content)
+
+            # Send a JSON response indicating success
+            self.set_header('Content-Type', 'application/json')
+            self.finish(json.dumps({"status": "success", "message": f"File saved as {file_path}"}))
+        except Exception as e:
+            self.set_status(500)
+            self.set_header('Content-Type', 'application/json')
+            self.finish(json.dumps({"error": str(e)}))
+
+
 def setup_handlers(web_app):
     host_pattern = ".*$"
 
@@ -69,10 +157,16 @@ def setup_handlers(web_app):
     route_pattern = url_path_join(base_url, "tvb-ext-ontology", "get-example")
     node_pattern = url_path_join(base_url, "tvb-ext-ontology", "node")
     node_connections_pattern = url_path_join(base_url, "tvb-ext-ontology", "node-connections")
+    node_children_connections_pattern = url_path_join(base_url, "tvb-ext-ontology", "node-children-connections")
+    node_parent_connections_pattern = url_path_join(base_url, "tvb-ext-ontology", "node-parent-connections")
+    export_workspace_pattern = url_path_join(base_url, "tvb-ext-ontology", "export-workspace")
 
     handlers = [
         (route_pattern, RouteHandler),
         (node_pattern, NodeHandler),
-        (node_connections_pattern, NodeConnectionsHandler)
+        (node_connections_pattern, NodeConnectionsHandler),
+        (node_children_connections_pattern, NodeChildrenConnectionsHandler),
+        (node_parent_connections_pattern, NodeParentConnectionsHandler),
+        (export_workspace_pattern, ExportWorkspaceHandler)
     ]
     web_app.add_handlers(host_pattern, handlers)

@@ -46,21 +46,74 @@ export async function requestAPI<T>(
   return data;
 }
 
-export async function fetchNodeByLabel(label: string): Promise<any> {
+export async function fetchNodeByLabel(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<any>(`node?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
+    return { nodes: [], links: []};
   }
 }
 
-export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] } | null> {
+export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-connections?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
-    return null;
+    return { nodes: [], links: [] };
+  }
+}
+
+export async function fetchNodeChildren(label: string, id: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+  try {
+    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-children-connections?label=${label}&id=${id}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching node data: ${error}`);
+    return { nodes: [], links: [] };
+  }
+}
+
+export async function fetchNodeParents(label: string, id: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+  try {
+    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-parent-connections?label=${label}&id=${id}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching node data: ${error}`);
+    return { nodes: [], links: [] };
+  }
+}
+
+export async function exportWorkspace(exportType: string, nodeData: { [key: string]: string }, filename: string) {
+  try {
+    // Retrieve the _xsrf token from cookies
+    const xsrfToken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('_xsrf='))
+      ?.split('=')[1];
+
+    const response = await fetch('/tvb-ext-ontology/export-workspace', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRFToken': xsrfToken || ''
+      },
+      body: JSON.stringify({
+        exportType,
+        data: nodeData,
+        filename
+      })
+    });
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Failed to export the file.');
+    }
+  } catch (error) {
+    console.error('Error during export:', error);
+    throw error;
   }
 }

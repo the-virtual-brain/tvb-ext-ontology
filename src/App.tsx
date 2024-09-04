@@ -5,12 +5,9 @@ import InfoBoxComponent from './components/InfoBox';
 import WorkspaceComponent from './components/Workspace';
 import { ISelectedNodeType } from './components/interfaces/InfoBoxInterfaces';
 import { IWorkspaceState } from './components/interfaces/WorkspaceInterfaces';
+import TreeViewComponent from './components/TreeView';
 
-interface IAppProps {
-  fetchData: () => Promise<any>;
-}
-
-const App: React.FC<IAppProps> = () => {
+const App: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(null);
 
   const [workspace, setWorkspace] = useState<IWorkspaceState>({
@@ -26,12 +23,8 @@ const App: React.FC<IAppProps> = () => {
       switch (node.type) {
         case 'Neural Mass Model':
           return { ...prevWorkspace, model: node };
-        case 'TheVirtualBrain':
-          if (node.label.includes('Noise')) {
-            return { ...prevWorkspace, noise: node };
-          } else {
-            return { ...prevWorkspace, connectivity: node };
-          }
+        case 'Noise':
+          return { ...prevWorkspace, noise: node };
         case 'Coupling':
           return { ...prevWorkspace, coupling: node };
         case 'Integrator':
@@ -46,6 +39,7 @@ const App: React.FC<IAppProps> = () => {
     <div className="layout">
       <InfoBoxComponent selectedNode={selectedNode} addToWorkspace={addToWorkspace} />
       <WorkspaceComponent workspace={workspace} />
+      <TreeViewComponent selectedNode={selectedNode} />
       <GraphViewComponent setSelectedNode={setSelectedNode} />
     </div>
   );
