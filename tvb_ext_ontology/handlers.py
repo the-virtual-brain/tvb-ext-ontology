@@ -9,6 +9,22 @@ from tvbo.api.ontology_api import OntologyAPI
 onto_api = OntologyAPI()
 
 
+def custom_get(data, key, default):
+    """
+    Custom get function that returns the default value if the key is missing or
+    if the value is explicitly the string "None".
+
+    Args:
+    data (dict): Dictionary to fetch values from.
+    key (str): Key to lookup in the dictionary.
+    default (Any): Default value to return if the key is not found or the value is "None".
+
+    Returns:
+    Any: Value corresponding to the key in the dictionary or the default value.
+    """
+    return data.get(key, default) if data.get(key, default) != "None" else default
+
+
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
@@ -123,43 +139,46 @@ class ExportWorkspaceHandler(APIHandler):
             )  # Default filename if none is provided
 
             # Ensure the filename has the correct extension
-            if not filename.endswith(".txt"):
-                filename += ".txt"
+            if not filename.endswith(".py"):
+                filename += ".py"
 
-            # Create the content for the file
-            content = (
-                f"Model: {nodes_data.get('model', 'None')}\n"
-                f"Connectivity: {nodes_data.get('connectivity', 'None')}\n"
-                f"Coupling: {nodes_data.get('coupling', 'None')}\n"
-                f"Noise: {nodes_data.get('noise', 'None')}\n"
-                f"Integration Method: {nodes_data.get('integrationMethod', 'None')}\n"
-            )
             metadata = {
                 "model": {
-                    "label": nodes_data.get("model", "Generic2dOscillator"),
-                    "parameters": {"label": "a", "value": 1},
+                    "label": custom_get(nodes_data, "model", "Generic2dOscillator"),
+                    "parameters": {},
                 },
                 "connectivity": {
                     "parcellation": {
-                        "label": nodes_data.get("parcellation", "DesikanKilliany")
+                        "label": custom_get(
+                            nodes_data, "parcellation", "DesikanKilliany"
+                        ),
                     },
-                    "tractogram": {"label": nodes_data.get("tractogram", "dTOR")},
+                    "tractogram": {
+                        "label": custom_get(nodes_data, "tractogram", "dTOR"),
+                    },
                 },
-                "coupling": {"label": nodes_data.get("coupling", "Linear")},
+                "coupling": {
+                    "label": custom_get(nodes_data, "coupling", "Linear"),
+                },
                 "integration": {
-                    "method": nodes_data.get("integrationMethod", "HeunDeterministic"),
+                    "method": custom_get(
+                        nodes_data, "integrationMethod", "HeunDeterministic"
+                    ),
                     "noise": (
                         {
-                            "additive": nodes_data.get("noise", "Additive")
+                            "additive": custom_get(nodes_data, "noise", "Additive")
                             == "Additive",
                             "parameters": {"label": "sigma", "value": 0.1},
                         }
                         if "stochastic"
-                        in nodes_data.get("integrationMethod", "HeunDeterministic")
+                        in custom_get(
+                            nodes_data, "integrationMethod", "HeunDeterministic"
+                        )
                         else {}
                     ),
                 },
             }
+
             onto_api.configure_simulation_experiment(metadata)
             content = onto_api.experiment.render_code()
 
