@@ -163,21 +163,8 @@ class ExportWorkspaceHandler(APIHandler):
                     "label": custom_get(nodes_data, "coupling", "Linear"),
                 },
                 "integration": {
-                    "method": custom_get(
-                        nodes_data, "integrationMethod", "HeunDeterministic"
-                    ),
-                    "noise": (
-                        {
-                            "additive": custom_get(nodes_data, "noise", "Additive")
-                            == "Additive",
-                            "parameters": {"label": "sigma", "value": 0.1},
-                        }
-                        if "stochastic"
-                        in custom_get(
-                            nodes_data, "integrationMethod", "HeunDeterministic"
-                        )
-                        else {}
-                    ),
+                    "method": custom_get(nodes_data, "integrationMethod", "Heun"),
+                    "noise": custom_get(nodes_data, "noise", None),
                 },
             }
 
