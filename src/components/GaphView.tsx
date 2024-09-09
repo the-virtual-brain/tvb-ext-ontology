@@ -40,6 +40,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       type: node.type,
       definition: node.definition,
       iri: node.iri,
+      requires: node.requires,
       childNodes: node.childNodes,
       childLinks: node.childLinks,
       collapsed: false

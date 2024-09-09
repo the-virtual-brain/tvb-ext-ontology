@@ -4,4 +4,5 @@ export interface ITreeNode {
   type: string;
   children: ITreeNode[];
   parents: ITreeNode[];
+  requires: string[];
 }

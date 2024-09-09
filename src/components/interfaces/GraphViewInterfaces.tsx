@@ -4,6 +4,7 @@ export interface INodeType {
   type: string;
   definition: string;
   iri: string;
+  requires: string[];
   x?: number;
   y?: number;
   collapsed?: boolean;
