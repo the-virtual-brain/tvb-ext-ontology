@@ -149,9 +149,11 @@ class ExportWorkspaceHandler(APIHandler):
                 },
                 "connectivity": {
                     "parcellation": {
-                        "label": custom_get(
-                            nodes_data, "parcellation", "DesikanKilliany"
-                        ),
+                        "atlas": {
+                            "name": custom_get(
+                                nodes_data, "parcellation", "DesikanKilliany"
+                            )
+                        },
                     },
                     "tractogram": {
                         "label": custom_get(nodes_data, "tractogram", "dTOR"),
