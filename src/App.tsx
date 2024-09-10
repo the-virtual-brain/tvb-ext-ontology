@@ -12,7 +12,8 @@ const App: React.FC = () => {
 
   const [workspace, setWorkspace] = useState<IWorkspaceState>({
     model: null,
-    connectivity: null,
+    parcellation: null,
+    tractogram: null,
     coupling: null,
     noise: null,
     integrationMethod: null
@@ -35,10 +36,20 @@ const App: React.FC = () => {
     });
   };
 
+  const updateConnectivityOptions = (optionType: 'parcellation' | 'tractogram', value: string) => {
+    setWorkspace(prev => {
+      return {
+        ...prev,
+        parcellation: optionType === 'parcellation' ? value : prev.parcellation,
+        tractogram: optionType === 'tractogram' ? value : prev.tractogram,
+      };
+    });
+  };
+
   return (
     <div className="layout">
       <InfoBoxComponent selectedNode={selectedNode} addToWorkspace={addToWorkspace} />
-      <WorkspaceComponent workspace={workspace} />
+      <WorkspaceComponent workspace={workspace} updateConnectivityOptions={updateConnectivityOptions} />
       <TreeViewComponent selectedNode={selectedNode} />
       <GraphViewComponent setSelectedNode={setSelectedNode} />
     </div>

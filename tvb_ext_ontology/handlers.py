@@ -126,70 +126,143 @@ class NodeParentConnectionsHandler(APIHandler):
         self.finish(json.dumps(node_data))
 
 
+class InvalidDirectoryException(Exception):
+    """ Custom class for invalid directory paths"""
+    pass
+
+
 class ExportWorkspaceHandler(APIHandler):
     @tornado.web.authenticated
     def post(self):
         try:
-            # Parse the request JSON body
+            # parse the request JSON body
             data = json.loads(self.request.body.decode("utf-8"))
             export_type = data.get("exportType", "txt")
             nodes_data = data.get("data", {})
-            filename = data.get(
-                "filename", "workspace_export"
-            )  # Default filename if none is provided
+            directory = data.get("directory", '')
 
-            # Ensure the filename has the correct extension
-            if not filename.endswith(".py"):
-                filename += ".py"
+            # validate directory
+            print(f'Validating path {directory}')
+            if directory == '':
+                directory = os.getcwd()
+            if not os.path.isdir(directory):
+                raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
 
-            metadata = {
-                "model": {
-                    "label": custom_get(nodes_data, "model", "Generic2dOscillator"),
-                    "parameters": {},
-                },
-                "connectivity": {
-                    "parcellation": {
-                        "atlas": {
-                            "name": custom_get(
-                                nodes_data, "parcellation", "DesikanKilliany"
-                            )
-                        },
-                    },
-                    "tractogram": {
-                        "label": custom_get(nodes_data, "tractogram", "dTOR"),
-                    },
-                },
-                "coupling": {
-                    "label": custom_get(nodes_data, "coupling", "Linear"),
-                },
-                "integration": {
-                    "method": custom_get(nodes_data, "integrationMethod", "Heun"),
-                    "noise": custom_get(nodes_data, "noise", None),
-                },
-            }
+            metadata = construct_metadata(nodes_data)
+            print(f'Created the metadata: {metadata}')
 
             onto_api.configure_simulation_experiment(metadata)
-            content = onto_api.experiment.render_code()
+            print('Configured simulation experiment')
 
-            # Determine the save path
-            current_dir = os.getcwd()  # Get the current working directory
-            file_path = os.path.join(current_dir, filename)
-
-            # Write the content to a file in the current working directory
-            with open(file_path, "w") as f:
-                f.write(content)
+            onto_api.experiment.save_code(directory)
+            print('Saved code')
 
             # Send a JSON response indicating success
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
-                    {"status": "success", "message": f"File saved as {file_path}"}
+                    {"status": "success", "message": f"File saved in folder {directory}"}
                 )
             )
+        except InvalidDirectoryException as e:
+            self.set_status(400)
+            self.set_header("Content-Type", "application/json")
+            self.finish(json.dumps({"error": str(e)}))
+
         except Exception as e:
             self.set_status(500)
             self.set_header("Content-Type", "application/json")
             self.finish(json.dumps({"error": str(e)}))
+
+
+class RunSimulationHandler(APIHandler):
+    @tornado.web.authenticated
+    def post(self):
+        try:
+            # Parse the request JSON body
+            data = json.loads(self.request.body.decode("utf-8"))
+            nodes_data = data.get("data", {})
+            directory = data.get("directory", '')
+
+            # validate directory
+            print(f'Validating path {directory}')
+            if directory == '':
+                directory = os.getcwd()
+            if not os.path.isdir(directory):
+                raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
+            metadata = construct_metadata(nodes_data)
+
+            print(f'Created the metadata: {metadata}')
+
+            onto_api.configure_simulation_experiment(metadata)
+            print('Configured simulation experiment')
+
+            # run simulation
+            print('Starting to run the experiment')
+            onto_api.experiment.run()
+            print('Finished the experiment')
+
+            # save TS to disk
+            print('Saving TS')
+            onto_api.experiment.save_timeseries(directory)
+            print(f'Saved TS at {directory}')
+
+            # Send a JSON response indicating success
+            self.set_header("Content-Type", "application/json")
+            self.finish(
+                json.dumps(
+                    {"status": "success", "message": f"Saved simulation results in folder {directory}"}
+                )
+            )
+        except InvalidDirectoryException as e:
+            self.set_status(400)
+            self.set_header("Content-Type", "application/json")
+            self.finish(json.dumps({"error": str(e)}))
+
+        except Exception as e:
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.finish(json.dumps({"error": str(e)}))
+
+
+def construct_metadata(nodes_data):
+    """
+    Construct the metadata dictionary using the data coming from the configured workspace
+    Parameters
+    ----------
+    nodes_data:
+        dict containing the data configured in the workspace
+    Returns
+    -------
+    metadata:
+        dict contaning the metadata that will be used in exporting the code or running a simulation
+    """
+    metadata = {
+        "model": {
+            "label": custom_get(nodes_data, "model", "Generic2dOscillator"),
+            "parameters": {},
+        },
+        "connectivity": {
+            "parcellation": {
+                "atlas": {
+                    "name": custom_get(
+                        nodes_data, "parcellation", "DesikanKilliany"
+                    ),
+                }
+            },
+            "tractogram": {
+                "label": custom_get(nodes_data, "tractogram", "dTOR"),
+            },
+        },
+        "coupling": {
+            "label": custom_get(nodes_data, "coupling", "Linear"),
+        },
+        "integration": {
+            "method": custom_get(nodes_data, "integrationMethod", "Heun"),
+            "noise": custom_get(nodes_data, "noise", None),
+        },
+    }
+    return metadata
 
 
 def setup_handlers(web_app):
@@ -211,6 +284,10 @@ def setup_handlers(web_app):
         base_url, "tvb-ext-ontology", "export-workspace"
     )
 
+    run_simulation_pattern = url_path_join(
+        base_url, "tvb-ext-ontology", "run-simulation"
+    )
+
     handlers = [
         (route_pattern, RouteHandler),
         (node_pattern, NodeHandler),
@@ -218,5 +295,6 @@ def setup_handlers(web_app):
         (node_children_connections_pattern, NodeChildrenConnectionsHandler),
         (node_parent_connections_pattern, NodeParentConnectionsHandler),
         (export_workspace_pattern, ExportWorkspaceHandler),
+        (run_simulation_pattern, RunSimulationHandler),
     ]
     web_app.add_handlers(host_pattern, handlers)
