@@ -48,7 +48,7 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({ selectedNode, addToWorkspac
 
   return (
     <div className="info-box">
-      <h3>Concept Details</h3>
+      <h3>Node Details</h3>
       {selectedNode ? (
         <div>
           <div className="node-info-container">

@@ -1,7 +1,8 @@
+/* General layout */
 .layout {
   display: grid;
   grid-template:
-    'info-box info-box tree-view' 0.3fr
+    'info-box info-box tree-view' 0.35fr
     'ontology-graph ontology-graph tree-view' auto
     'ontology-graph ontology-graph workspace' 1fr / 1fr 1fr 1fr;
   height: 100%;
@@ -9,14 +10,7 @@
   background-color: white;
 }
 
-.search-bar {
-  grid-area: search-bar;
-  border: 1px solid #ddd;
-  padding: 10px;
-  overflow: auto;
-  background-color: whitesmoke;
-}
-
+/* Parents & Children view */
 .tree-view {
   grid-area: tree-view;
   border: 1px solid #ddd;
@@ -25,6 +19,7 @@
   background-color: whitesmoke;
 }
 
+/* Graph view */
 .ontology-graph {
   grid-area: ontology-graph;
   border: 1px solid #ddd;
@@ -44,6 +39,16 @@
   flex: 1;
 }
 
+.search-bar {
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow: auto;
+  background-color: whitesmoke;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+/* Info box view */
 .info-box {
   grid-area: info-box;
   border: 1px solid #ddd;
@@ -67,6 +72,12 @@
   margin-left: auto; /* Aligns it to the right */
 }
 
+.info-box button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Workspace view */
 .workspace {
   grid-area: workspace;
   border: 1px solid #ddd;
@@ -79,14 +90,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .reset-button {
   background-color: #f44336;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -112,13 +123,13 @@
 
 .dropdown-section label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   font-weight: bold;
 }
 
 .dropdown-section select {
   width: 100%;
-  padding: 8px;
+  padding: 4px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
@@ -133,7 +144,7 @@
 }
 
 .export-controls {
-  margin-top: 20px;
+  margin-top: 5px;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -146,24 +157,6 @@
 
 .export-control label {
   margin-right: 10px;
-}
-
-.export-button {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.export-button:hover {
-  background-color: #0056b3;
 }
 
 .button-container {
@@ -179,8 +172,8 @@
   max-height: 100px;
 }
 
-.styled-button {
-  padding: 10px 15px;
+.export-button {
+  padding: 10px;
   font-size: 14px;
   background-color: #007bff;
   color: white;
@@ -193,20 +186,13 @@
   box-sizing: border-box;
 }
 
-.styled-button:hover {
-  background-color: #0056b3;
-}
-
-.button-container .styled-button:last-child {
+.button-container .export-button:last-child {
   margin-right: 0;
 }
 
-.search-bar {
-  display: flex;
-  margin-bottom: 10px;
-}
-
-.search-bar input {
+/* Common styling */
+.search-bar input,
+.export-control input {
   flex: 1;
   padding: 5px;
   font-size: 16px;
@@ -220,19 +206,15 @@
   padding: 5px 10px;
   font-size: 16px;
   background-color: #007bff;
+  transition: background-color 0.3s; /* transition effect between normal and hover color */
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .search-bar button:hover,
-.info-box button:hover {
+.info-box button:hover,
+.export-button:hover {
   background-color: #0056b3;
-}
-
-/* Disabled button style */
-.info-box button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }

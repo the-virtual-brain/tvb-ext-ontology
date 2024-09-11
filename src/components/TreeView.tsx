@@ -75,6 +75,7 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
   return (
     <div className="tree-view">
+      <h3>Node Connections</h3>
       {selectedNode ? (
         <>
           <h2 style={{ textAlign: 'center' }}>{selectedNode.label}</h2>
@@ -124,7 +125,7 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
           </div>
         </>
       ) : (
-        <p>Please select a node first</p>
+        <p>Please select a node to see its connections</p>
       )}
     </div>
   );

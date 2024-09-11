@@ -112,7 +112,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     }
   };
 
-  // for graph centering when it is first rendered
+  // center graph when it is first rendered
   useEffect(() => {
     if (fgRef.current && data.nodes.length > 0 && isInitialRender) {
       fgRef.current.centerAt(75, 75);

@@ -14,22 +14,6 @@ LOGGER = get_logger(__name__)
 onto_api = OntologyAPI()
 
 
-def custom_get(data, key, default):
-    """
-    Custom get function that returns the default value if the key is missing or
-    if the value is explicitly the string "None".
-
-    Args:
-    data (dict): Dictionary to fetch values from.
-    key (str): Key to lookup in the dictionary.
-    default (Any): Default value to return if the key is not found or the value is "None".
-
-    Returns:
-    Any: Value corresponding to the key in the dictionary or the default value.
-    """
-    return data.get(key, default) if data.get(key, default) != "None" else default
-
-
 class RouteHandler(APIHandler):
     # The following decorator should be present on all verb methods (head, get, post,
     # patch, put, delete, options) to ensure only authorized user can request the
@@ -218,6 +202,20 @@ class RunSimulationHandler(APIHandler):
             self.finish(json.dumps({"error": str(e)}))
 
 
+def custom_get(data, key, default):
+    """
+    Custom get function that returns the default value if the key is missing or
+    if the value is explicitly the string "None".
+
+    Args:
+    data (dict): Dictionary to fetch values from.
+    key (str): Key to lookup in the dictionary.
+    default (Any): Default value to return if the key is not found or the value is "None".
+
+    Returns:
+    Any: Value corresponding to the key in the dictionary or the default value.
+    """
+    return data.get(key, default) if data.get(key, default) != "None" else default
 def construct_metadata(nodes_data):
     """
     Construct the metadata dictionary using the data coming from the configured workspace

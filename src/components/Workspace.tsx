@@ -85,8 +85,6 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
         <p>{workspace.model ? workspace.model.label : 'None'}</p>
       </div>
       <div>
-        <h4>Connectivity</h4>
-
         <div className="dropdown-container">
           {/* Parcellation Dropdown */}
           <div className="dropdown-section">
@@ -139,16 +137,18 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
       {/* Export controls */}
       <div className="export-controls">
         <div className="export-control">
-          <label htmlFor="export-type">Select export type: </label>
-          <select
-            id="export-type"
-            value={exportType}
-            onChange={(e) => setExportType(e.target.value)}
-          >
-            <option value="py">Simulation code (.py)</option>
-            <option value="xml">Model specification (.xml)</option>
-            <option value="yaml">Metadata (.yaml)</option>
-          </select>
+          <div className="dropdown-section">
+            <label htmlFor="export-type">Select export type: </label>
+            <select
+              id="export-type"
+              value={exportType}
+              onChange={(e) => setExportType(e.target.value)}
+            >
+              <option value="py">Simulation code (.py)</option>
+              <option value="xml">Model specification (.xml)</option>
+              <option value="yaml">Metadata (.yaml)</option>
+            </select>
+          </div>
         </div>
 
         <div className="export-control">
@@ -163,8 +163,8 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
         </div>
 
         <div className="button-container">
-          <button className="styled-button" onClick={handleExport}>Export</button>
-          <button className="styled-button" onClick={handleRunSimulation}>Run Simulation</button>
+          <button className="export-button" onClick={handleExport}>Export</button>
+          <button className="export-button" onClick={handleRunSimulation}>Run Simulation</button>
         </div>
         {message && <p>{message}</p>} {/* Display success/error message */}
       </div>
