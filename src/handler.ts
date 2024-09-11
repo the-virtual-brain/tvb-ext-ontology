@@ -86,7 +86,7 @@ export async function fetchNodeParents(label: string, id: string): Promise<{ nod
   }
 }
 
-export async function exportWorkspace(exportType: string, nodeData: { [key: string]: string }, filename: string) {
+export async function exportWorkspace(exportType: string, nodeData: { [key: string]: string }, directory: string) {
   try {
     // Retrieve the _xsrf token from cookies
     const xsrfToken = document.cookie
@@ -103,17 +103,50 @@ export async function exportWorkspace(exportType: string, nodeData: { [key: stri
       body: JSON.stringify({
         exportType,
         data: nodeData,
-        filename
+        directory
       })
     });
 
     if (response.ok) {
       return response.json();
     } else {
-      throw new Error('Failed to export the file.');
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to export the file.');
     }
   } catch (error) {
     console.error('Error during export:', error);
+    throw error;
+  }
+}
+
+export async function runSimulation(exportType: string, nodeData: { [key: string]: string }, directory: string) {
+  try {
+    const xsrfToken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('_xsrf='))
+      ?.split('=')[1];
+
+    const response = await fetch('/tvb-ext-ontology/run-simulation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRFToken': xsrfToken || ''
+      },
+      body: JSON.stringify({
+        exportType,
+        data: nodeData,
+        directory
+      })
+    });
+
+    if (response.ok) {
+      return response.json();
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to export the file.');
+    }
+  } catch (error) {
+    console.error('Error during simulation run:', error);
     throw error;
   }
 }

@@ -1,26 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IWorkspaceProps } from './interfaces/WorkspaceInterfaces';
-import { exportWorkspace } from '../handler';
+import { exportWorkspace, runSimulation } from '../handler';
 
-const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace }) => {
-  const [exportType, setExportType] = useState('python file');
+const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnectivityOptions, resetWorkspace }) => {
+  const [exportType, setExportType] = useState('py');
   const [message, setMessage] = useState<string | null>(null);
-  const [filename, setFilename] = useState('workspace_export'); // Default filename
+  const [directory, setDirectory] = useState('');
 
-  const handleExport = async () => {
+  const parcellationOptions = ['DesikanKilliany', 'Destrieux', 'Schaefer1000', 'hcpmmp1', 'virtualdbs'];
+  const tractogramOptions = ['MghUscHcp32', 'PPMI85', 'dTOR'];
+
+  const constructNodeData = () => {
     const nodeData = {
       model: workspace.model ? workspace.model.label : 'None',
-      connectivity: workspace.connectivity ? workspace.connectivity.label : 'None',
+      parcellation: workspace.parcellation ? workspace.parcellation : 'None',
+      tractogram: workspace.tractogram ? workspace.tractogram : 'None',
       coupling: workspace.coupling ? workspace.coupling.label : 'None',
       noise: workspace.noise ? workspace.noise.label : 'None',
       integrationMethod: workspace.integrationMethod ? workspace.integrationMethod.label : 'None',
     };
 
+    return nodeData;
+  };
+
+  const handleExport = async () => {
+    const nodeData = constructNodeData();
+
     try {
-      const response = await exportWorkspace(exportType, nodeData, filename);
+      const response = await exportWorkspace(exportType, nodeData, directory);
 
       if (response.status === 'success') {
-        setMessage(`File saved successfully: ${response.message}`);
+        setMessage(`${response.message}`);
       } else {
         setMessage(`Failed to save file: ${response.error}`);
       }
@@ -33,16 +43,83 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace }) => {
     }
   };
 
+  const handleRunSimulation = async () => {
+    const nodeData = constructNodeData();
+
+    try {
+      const response = await runSimulation(exportType, nodeData, directory);
+
+      if (response.status === 'success') {
+        setMessage(`${response.message}`);
+      } else {
+        setMessage(`${response.error}`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setMessage(`Error during simulation run: ${error.message}`);
+      } else {
+        setMessage('An unknown error occurred during simulation run.');
+      }
+    }
+  };
+
+  // set timer for success/error message
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 30000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   return (
     <div className="workspace">
-      <h3>Workspace</h3>
+      <div className="workspace-header">
+        <h3>Workspace</h3>
+        <button className="reset-button" onClick={resetWorkspace}>Reset Workspace</button>
+      </div>
       <div>
         <h4>Model</h4>
         <p>{workspace.model ? workspace.model.label : 'None'}</p>
       </div>
       <div>
-        <h4>Connectivity</h4>
-        <p>{workspace.connectivity ? workspace.connectivity.label : 'None'}</p>
+        <div className="dropdown-container">
+          {/* Parcellation Dropdown */}
+          <div className="dropdown-section">
+            <label htmlFor="parcellation">Parcellation:</label>
+            <select
+              id="parcellation"
+              value={workspace.parcellation || ''}
+              onChange={(e) => updateConnectivityOptions('parcellation', e.target.value)} // Update state on change
+            >
+              <option value="" disabled>Select a parcellation</option>
+              {parcellationOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tractogram Dropdown */}
+          <div className="dropdown-section">
+            <label htmlFor="tractogram">Tractogram:</label>
+            <select
+              id="tractogram"
+              value={workspace.tractogram || ''}
+              onChange={(e) => updateConnectivityOptions('tractogram', e.target.value)} // Update state on change
+            >
+              <option value="" disabled>Select a tractogram</option>
+              {tractogramOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </div>
       <div>
         <h4>Coupling</h4>
@@ -60,28 +137,35 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace }) => {
       {/* Export controls */}
       <div className="export-controls">
         <div className="export-control">
-          <label htmlFor="export-type">Select export type: </label>
-          <select
-            id="export-type"
-            value={exportType}
-            onChange={(e) => setExportType(e.target.value)}
-          >
-            <option value="python file">Python File</option>
-            <option value="xml file">XML File</option>
-          </select>
+          <div className="dropdown-section">
+            <label htmlFor="export-type">Select export type: </label>
+            <select
+              id="export-type"
+              value={exportType}
+              onChange={(e) => setExportType(e.target.value)}
+            >
+              <option value="py">Simulation code (.py)</option>
+              <option value="xml">Model specification (.xml)</option>
+              <option value="yaml">Metadata (.yaml)</option>
+            </select>
+          </div>
         </div>
 
         <div className="export-control">
-          <label htmlFor="filename">Filename: </label>
+          <label htmlFor="directory">Save Directory Path: </label>
           <input
-            id="filename"
+            id="directory"
             type="text"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
+            value={directory}
+            onChange={(e) => setDirectory(e.target.value)}
+            placeholder="/home/user/downloads"
           />
         </div>
 
-        <button className="export-button" onClick={handleExport}>Export</button>
+        <div className="button-container">
+          <button className="export-button" onClick={handleExport}>Export</button>
+          <button className="export-button" onClick={handleRunSimulation}>Run Simulation</button>
+        </div>
         {message && <p>{message}</p>} {/* Display success/error message */}
       </div>
     </div>

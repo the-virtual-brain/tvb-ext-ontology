@@ -14,6 +14,7 @@ interface INodeRelation {
 const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
   const [parents, setParents] = useState<INodeRelation[]>([]);
   const [children, setChildren] = useState<INodeRelation[]>([]);
+  const [requirements, setRequirements] = useState<string[]>([]);
 
   useEffect(() => {
     if (!selectedNode) {
@@ -45,6 +46,12 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
     fetchAndSetParents();
     fetchAndSetChildren();
+
+    if (selectedNode.requires && selectedNode.requires.length > 0) {
+      setRequirements(selectedNode.requires);
+    } else {
+      setRequirements([]);
+    }
   }, [selectedNode]);
 
   const processNodeRelations = (
@@ -68,10 +75,12 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
   return (
     <div className="tree-view">
+      <h3>Node Connections</h3>
       {selectedNode ? (
         <>
           <h2 style={{ textAlign: 'center' }}>{selectedNode.label}</h2>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {/* Parents Column */}
             <div>
               <h3>Parents</h3>
               {parents.length > 0 ? (
@@ -87,7 +96,8 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
               )}
             </div>
 
-            <div>
+            {/* Children Column */}
+            <div style={{ marginLeft: '20px' }}>
               <h3>Children</h3>
               {children.length > 0 ? (
                 <ul>
@@ -101,10 +111,21 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
                 <p>No children found.</p>
               )}
             </div>
+            {/* Requires Column */}
+            {requirements.length > 0 && (
+              <div style={{ marginLeft: '20px' }}>
+                <h3>Requires</h3>
+                <ul>
+                  {requirements.map((requirement, index) => (
+                    <li key={index}>{requirement}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </>
       ) : (
-        <p>Please select a node first</p>
+        <p>Please select a node to see its connections</p>
       )}
     </div>
   );
