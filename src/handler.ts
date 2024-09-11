@@ -119,7 +119,7 @@ export async function exportWorkspace(exportType: string, nodeData: { [key: stri
   }
 }
 
-export async function runSimulation(exportType: string, nodeData: { [key: string]: string }, filename: string) {
+export async function runSimulation(exportType: string, nodeData: { [key: string]: string }, directory: string) {
   try {
     const xsrfToken = document.cookie
       .split('; ')
@@ -135,7 +135,7 @@ export async function runSimulation(exportType: string, nodeData: { [key: string
       body: JSON.stringify({
         exportType,
         data: nodeData,
-        filename
+        directory
       })
     });
 

@@ -3,7 +3,7 @@ import { IWorkspaceProps } from './interfaces/WorkspaceInterfaces';
 import { exportWorkspace, runSimulation } from '../handler';
 
 const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnectivityOptions }) => {
-  const [exportType, setExportType] = useState('python file');
+  const [exportType, setExportType] = useState('py');
   const [message, setMessage] = useState<string | null>(null);
   const [directory, setDirectory] = useState('');
 
@@ -142,13 +142,14 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
             value={exportType}
             onChange={(e) => setExportType(e.target.value)}
           >
-            <option value="python file">Python File</option>
-            <option value="xml file">XML File</option>
+            <option value="py">Simulation code (.py)</option>
+            <option value="xml">Model specification (.xml)</option>
+            <option value="yaml">Metadata (.yaml)</option>
           </select>
         </div>
 
         <div className="export-control">
-          <label htmlFor="directory">Save Directory Path: </label>
+        <label htmlFor="directory">Save Directory Path: </label>
           <input
             id="directory"
             type="text"

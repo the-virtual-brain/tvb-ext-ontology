@@ -6,6 +6,11 @@ from jupyter_server.utils import url_path_join
 import tornado
 from tvbo.api.ontology_api import OntologyAPI
 
+from tvb_ext_ontology.exceptions import InvalidDirectoryException
+from tvb_ext_ontology.logger.builder import get_logger
+
+LOGGER = get_logger(__name__)
+
 onto_api = OntologyAPI()
 
 
@@ -45,6 +50,7 @@ class NodeHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
 
+        LOGGER.info(f'Querying ontology for nodes with label: {label}')
         node_data = onto_api.get_node_by_label(label)
         if not node_data:
             self.set_status(404)
@@ -70,7 +76,7 @@ class NodeConnectionsHandler(APIHandler):
         node_data = {"nodes": nodes, "links": links}
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            self.finish(json.dumps({"error": f"No connections found found for node: {label}"}))
             return
 
         self.set_header("Content-Type", "application/json")
@@ -90,11 +96,12 @@ class NodeChildrenConnectionsHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
+        LOGGER.info(f'Searching for children for node: {label} with id {id}')
         onto_api.expand_node_relationships(label)
         node_data = onto_api.get_child_connections(id)
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            self.finish(json.dumps({"error": f"No children found for node {label} with id {id}"}))
             return
 
         self.set_header("Content-Type", "application/json")
@@ -114,21 +121,16 @@ class NodeParentConnectionsHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
+        LOGGER.info(f'Searching for parents for node: {label} with id {id}')
         onto_api.expand_node_relationships(label)
         node_data = onto_api.get_parent_connections(id)
-        print(f"node_data: {node_data}")
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No data found for label: {label}"}))
+            self.finish(json.dumps({"error": f"No parents found for node {label} with id {id}"}))
             return
 
         self.set_header("Content-Type", "application/json")
         self.finish(json.dumps(node_data))
-
-
-class InvalidDirectoryException(Exception):
-    """ Custom class for invalid directory paths"""
-    pass
 
 
 class ExportWorkspaceHandler(APIHandler):
@@ -140,24 +142,36 @@ class ExportWorkspaceHandler(APIHandler):
             export_type = data.get("exportType", "txt")
             nodes_data = data.get("data", {})
             directory = data.get("directory", '')
+            LOGGER.info('Workspace data coming from extension:')
+            LOGGER.info(f'Export type: {export_type}')
+            LOGGER.info(f'Node data: {nodes_data}')
+            LOGGER.info(f'Directory path: {directory}')
 
             # validate directory
-            print(f'Validating path {directory}')
+            LOGGER.info(f'Validating path {directory}')
             if directory == '':
                 directory = os.getcwd()
             if not os.path.isdir(directory):
                 raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
 
             metadata = construct_metadata(nodes_data)
-            print(f'Created the metadata: {metadata}')
+            LOGGER.info(f'Created the metadata: {metadata}')
 
             onto_api.configure_simulation_experiment(metadata)
-            print('Configured simulation experiment')
+            LOGGER.info('Configured simulation experiment')
 
-            onto_api.experiment.save_code(directory)
-            print('Saved code')
+            # treat different export type options
+            if export_type == 'py':
+                onto_api.experiment.save_code(directory)
+                LOGGER.info('Saved code')
+            elif export_type == 'xml':
+                onto_api.experiment.save_model_specification(directory)
+                LOGGER.info('Saved model specification')
+            elif export_type == 'yaml':
+                onto_api.experiment.save_metadata(directory)
+                LOGGER.info('Saved metadata')
 
-            # Send a JSON response indicating success
+            # send success json
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
@@ -182,30 +196,35 @@ class RunSimulationHandler(APIHandler):
             # Parse the request JSON body
             data = json.loads(self.request.body.decode("utf-8"))
             nodes_data = data.get("data", {})
+            export_type = data.get("export-type", "py")
             directory = data.get("directory", '')
+            LOGGER.info('Workspace data coming from extension:')
+            LOGGER.info(f'Export type: {export_type}')
+            LOGGER.info(f'Node data: {nodes_data}')
+            LOGGER.info(f'Directory path: {directory}')
 
             # validate directory
-            print(f'Validating path {directory}')
+            LOGGER.info(f'Validating path {directory}')
             if directory == '':
                 directory = os.getcwd()
             if not os.path.isdir(directory):
                 raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
             metadata = construct_metadata(nodes_data)
 
-            print(f'Created the metadata: {metadata}')
+            LOGGER.info(f'Created the metadata: {metadata}')
 
             onto_api.configure_simulation_experiment(metadata)
-            print('Configured simulation experiment')
+            LOGGER.info('Configured simulation experiment')
 
             # run simulation
-            print('Starting to run the experiment')
-            onto_api.experiment.run()
-            print('Finished the experiment')
+            LOGGER.info('Starting to run the experiment')
+            onto_api.experiment.run(simulation_length=10)
+            LOGGER.info('Finished the experiment')
 
             # save TS to disk
-            print('Saving TS')
+            LOGGER.info('Saving Time Series...')
             onto_api.experiment.save_timeseries(directory)
-            print(f'Saved TS at {directory}')
+            LOGGER.info(f'Saved Time Series at {directory}')
 
             # Send a JSON response indicating success
             self.set_header("Content-Type", "application/json")
