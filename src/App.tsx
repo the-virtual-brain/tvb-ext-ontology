@@ -10,14 +10,15 @@ import TreeViewComponent from './components/TreeView';
 const App: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(null);
 
-  const [workspace, setWorkspace] = useState<IWorkspaceState>({
+  const initialWorkspaceState: IWorkspaceState = {
     model: null,
     parcellation: null,
     tractogram: null,
     coupling: null,
     noise: null,
     integrationMethod: null
-  });
+  };
+  const [workspace, setWorkspace] = useState<IWorkspaceState>(initialWorkspaceState);
 
   const addToWorkspace = (node: ISelectedNodeType) => {
     setWorkspace(prevWorkspace => {
@@ -46,10 +47,14 @@ const App: React.FC = () => {
     });
   };
 
+  const resetWorkspace = () => {
+    setWorkspace(initialWorkspaceState);
+  };
+
   return (
     <div className="layout">
       <InfoBoxComponent selectedNode={selectedNode} addToWorkspace={addToWorkspace} />
-      <WorkspaceComponent workspace={workspace} updateConnectivityOptions={updateConnectivityOptions} />
+      <WorkspaceComponent workspace={workspace} updateConnectivityOptions={updateConnectivityOptions} resetWorkspace={resetWorkspace}/>
       <TreeViewComponent selectedNode={selectedNode} />
       <GraphViewComponent setSelectedNode={setSelectedNode} />
     </div>

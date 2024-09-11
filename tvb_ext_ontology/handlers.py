@@ -137,22 +137,9 @@ class ExportWorkspaceHandler(APIHandler):
     @tornado.web.authenticated
     def post(self):
         try:
-            # parse the request JSON body
-            data = json.loads(self.request.body.decode("utf-8"))
-            export_type = data.get("exportType", "txt")
-            nodes_data = data.get("data", {})
-            directory = data.get("directory", '')
-            LOGGER.info('Workspace data coming from extension:')
-            LOGGER.info(f'Export type: {export_type}')
-            LOGGER.info(f'Node data: {nodes_data}')
-            LOGGER.info(f'Directory path: {directory}')
+            nodes_data, export_type, directory = parse_json_body(self.request.body)
 
-            # validate directory
-            LOGGER.info(f'Validating path {directory}')
-            if directory == '':
-                directory = os.getcwd()
-            if not os.path.isdir(directory):
-                raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
+            directory = validate_directory_path(directory)
 
             metadata = construct_metadata(nodes_data)
             LOGGER.info(f'Created the metadata: {metadata}')
@@ -175,7 +162,7 @@ class ExportWorkspaceHandler(APIHandler):
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
-                    {"status": "success", "message": f"File saved in folder {directory}"}
+                    {"status": "success", "message": f"File saved in folder {os.path.abspath(directory)}"}
                 )
             )
         except InvalidDirectoryException as e:
@@ -193,24 +180,11 @@ class RunSimulationHandler(APIHandler):
     @tornado.web.authenticated
     def post(self):
         try:
-            # Parse the request JSON body
-            data = json.loads(self.request.body.decode("utf-8"))
-            nodes_data = data.get("data", {})
-            export_type = data.get("export-type", "py")
-            directory = data.get("directory", '')
-            LOGGER.info('Workspace data coming from extension:')
-            LOGGER.info(f'Export type: {export_type}')
-            LOGGER.info(f'Node data: {nodes_data}')
-            LOGGER.info(f'Directory path: {directory}')
+            nodes_data, export_type, directory = parse_json_body(self.request.body)
 
-            # validate directory
-            LOGGER.info(f'Validating path {directory}')
-            if directory == '':
-                directory = os.getcwd()
-            if not os.path.isdir(directory):
-                raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
+            directory = validate_directory_path(directory)
+
             metadata = construct_metadata(nodes_data)
-
             LOGGER.info(f'Created the metadata: {metadata}')
 
             onto_api.configure_simulation_experiment(metadata)
@@ -230,7 +204,7 @@ class RunSimulationHandler(APIHandler):
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
-                    {"status": "success", "message": f"Saved simulation results in folder {directory}"}
+                    {"status": "success", "message": f"Saved simulation results in folder {os.path.abspath(directory)}"}
                 )
             )
         except InvalidDirectoryException as e:
@@ -283,6 +257,34 @@ def construct_metadata(nodes_data):
     }
     return metadata
 
+
+def parse_json_body(body):
+    """
+    Parse the body of the request and return the parsed data
+    """
+    data = json.loads(body.decode("utf-8"))
+    nodes_data = data.get("data", {})
+    export_type = data.get("exportType", "py")
+    directory = data.get("directory", '')
+    LOGGER.info('Workspace data coming from extension:')
+    LOGGER.info(f'Export type: {export_type}')
+    LOGGER.info(f'Node data: {nodes_data}')
+    LOGGER.info(f'Directory path: {directory}')
+
+    return nodes_data, export_type, directory
+
+
+def validate_directory_path(directory):
+    """
+    Validate a directory path given by the user
+    """
+    LOGGER.info(f'Validating path {directory}')
+    if directory == '':
+        directory = os.getcwd()
+    if not os.path.isdir(directory):
+        raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
+
+    return directory
 
 def setup_handlers(web_app):
     host_pattern = ".*$"

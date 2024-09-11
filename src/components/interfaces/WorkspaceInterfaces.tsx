@@ -3,6 +3,7 @@ import { ISelectedNodeType } from './InfoBoxInterfaces';
 export interface IWorkspaceProps {
   workspace: IWorkspaceState;
   updateConnectivityOptions: (optionType: 'parcellation' | 'tractogram', value: string) => void;
+  resetWorkspace: () => void;
 }
 
 export interface IWorkspaceState {

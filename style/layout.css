@@ -75,6 +75,29 @@
   background-color: whitesmoke;
 }
 
+.workspace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.reset-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.reset-button:hover {
+  background-color: #d32f2f;
+}
+
 .dropdown-container {
   display: flex;
   gap: 20px;

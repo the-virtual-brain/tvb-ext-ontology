@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IWorkspaceProps } from './interfaces/WorkspaceInterfaces';
 import { exportWorkspace, runSimulation } from '../handler';
 
-const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnectivityOptions }) => {
+const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnectivityOptions, resetWorkspace }) => {
   const [exportType, setExportType] = useState('py');
   const [message, setMessage] = useState<string | null>(null);
   const [directory, setDirectory] = useState('');
@@ -76,7 +76,10 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
 
   return (
     <div className="workspace">
-      <h3>Workspace</h3>
+      <div className="workspace-header">
+        <h3>Workspace</h3>
+        <button className="reset-button" onClick={resetWorkspace}>Reset Workspace</button>
+      </div>
       <div>
         <h4>Model</h4>
         <p>{workspace.model ? workspace.model.label : 'None'}</p>
@@ -149,7 +152,7 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
         </div>
 
         <div className="export-control">
-        <label htmlFor="directory">Save Directory Path: </label>
+          <label htmlFor="directory">Save Directory Path: </label>
           <input
             id="directory"
             type="text"
