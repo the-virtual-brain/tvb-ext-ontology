@@ -25,7 +25,9 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
   const isAddable = selectedNode && validTypes.includes(selectedNode.type);
 
   const handleAddToWorkspace = async () => {
-    if (!selectedNode) return;
+    if (!selectedNode) {
+      return;
+    }
 
     if (isAddable) {
       addToWorkspace(selectedNode);
