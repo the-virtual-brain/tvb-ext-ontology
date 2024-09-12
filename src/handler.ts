@@ -1,7 +1,10 @@
 import { URLExt } from '@jupyterlab/coreutils';
 
 import { ServerConnection } from '@jupyterlab/services';
-import { ILinkType, INodeType } from './components/interfaces/GraphViewInterfaces';
+import {
+  ILinkType,
+  INodeType
+} from './components/interfaces/GraphViewInterfaces';
 
 /**
  * Call the API extension
@@ -46,19 +49,26 @@ export async function requestAPI<T>(
   return data;
 }
 
-export async function fetchNodeByLabel(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+export async function fetchNodeByLabel(
+  label: string
+): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<any>(`node?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
-    return { nodes: [], links: []};
+    return { nodes: [], links: [] };
   }
 }
 
-export async function fetchNodeConnections(label: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+export async function fetchNodeConnections(
+  label: string
+): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
-    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-connections?label=${label}`);
+    const response = await requestAPI<{
+      nodes: INodeType[];
+      links: ILinkType[];
+    }>(`node-connections?label=${label}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
@@ -66,9 +76,15 @@ export async function fetchNodeConnections(label: string): Promise<{ nodes: INod
   }
 }
 
-export async function fetchNodeChildren(label: string, id: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+export async function fetchNodeChildren(
+  label: string,
+  id: string
+): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
-    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-children-connections?label=${label}&id=${id}`);
+    const response = await requestAPI<{
+      nodes: INodeType[];
+      links: ILinkType[];
+    }>(`node-children-connections?label=${label}&id=${id}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
@@ -76,9 +92,15 @@ export async function fetchNodeChildren(label: string, id: string): Promise<{ no
   }
 }
 
-export async function fetchNodeParents(label: string, id: string): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
+export async function fetchNodeParents(
+  label: string,
+  id: string
+): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
-    const response = await requestAPI<{ nodes: INodeType[]; links: ILinkType[] }>(`node-parent-connections?label=${label}&id=${id}`);
+    const response = await requestAPI<{
+      nodes: INodeType[];
+      links: ILinkType[];
+    }>(`node-parent-connections?label=${label}&id=${id}`);
     return response;
   } catch (error) {
     console.error(`Error fetching node data: ${error}`);
@@ -86,7 +108,11 @@ export async function fetchNodeParents(label: string, id: string): Promise<{ nod
   }
 }
 
-export async function exportWorkspace(exportType: string, nodeData: { [key: string]: string }, directory: string) {
+export async function exportWorkspace(
+  exportType: string,
+  nodeData: { [key: string]: string },
+  directory: string
+) {
   try {
     // Retrieve the _xsrf token from cookies
     const xsrfToken = document.cookie
@@ -119,7 +145,11 @@ export async function exportWorkspace(exportType: string, nodeData: { [key: stri
   }
 }
 
-export async function runSimulation(exportType: string, nodeData: { [key: string]: string }, directory: string) {
+export async function runSimulation(
+  exportType: string,
+  nodeData: { [key: string]: string },
+  directory: string
+) {
   try {
     const xsrfToken = document.cookie
       .split('; ')

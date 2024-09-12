@@ -14,7 +14,10 @@ interface IInfoBoxProps {
   addToWorkspace: (node: ISelectedNodeType) => void;
 }
 
-const InfoBoxComponent: React.FC<IInfoBoxProps> = ({ selectedNode, addToWorkspace }) => {
+const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
+  selectedNode,
+  addToWorkspace
+}) => {
   // Valid types for adding objects to workspace
   // TODO: add valid type for connectivity
   const validTypes = ['Neural Mass Model', 'Noise', 'Coupling', 'Integrator'];
@@ -29,20 +32,28 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({ selectedNode, addToWorkspac
 
       // check requirements of selected node
       if (selectedNode.requires && selectedNode.requires.length > 0) {
-        const requiredNodePromises = selectedNode.requires.map(label => fetchNodeByLabel(label));
+        const requiredNodePromises = selectedNode.requires.map(label =>
+          fetchNodeByLabel(label)
+        );
         const requiredNodesResponses = await Promise.all(requiredNodePromises);
 
         requiredNodesResponses.forEach(response => {
           const { nodes } = response; // Extract nodes from the response
           nodes.forEach(node => {
-            if (validTypes.includes(node.type) && (node.type !== selectedNode.type)) {  // check for same type as selected node to not overwrite it
+            if (
+              validTypes.includes(node.type) &&
+              node.type !== selectedNode.type
+            ) {
+              // check for same type as selected node to not overwrite it
               addToWorkspace(node);
             }
           });
         });
       }
     } else {
-      console.warn(`Node type "${selectedNode.type}" is not allowed in the workspace.`);
+      console.warn(
+        `Node type "${selectedNode.type}" is not allowed in the workspace.`
+      );
     }
   };
 
@@ -65,7 +76,11 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({ selectedNode, addToWorkspac
               </p>
               <p>
                 <strong>IRI:</strong>{' '}
-                <a href={selectedNode.iri} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={selectedNode.iri}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {selectedNode.iri}
                 </a>
               </p>

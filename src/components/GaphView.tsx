@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ForceGraph2D, { ForceGraphMethods, LinkObject, NodeObject } from 'react-force-graph-2d';
+import ForceGraph2D, {
+  ForceGraphMethods,
+  LinkObject,
+  NodeObject
+} from 'react-force-graph-2d';
 import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 import { ILinkType, INodeType } from './interfaces/GraphViewInterfaces';
@@ -11,11 +15,15 @@ interface IGraphViewProps {
 export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   setSelectedNode
 }) => {
-  const [data, setData] = useState<{ nodes: INodeType[]; links: ILinkType[]; }>({ nodes: [], links: [] });
+  const [data, setData] = useState<{ nodes: INodeType[]; links: ILinkType[] }>({
+    nodes: [],
+    links: []
+  });
   const [searchLabel, setSearchLabel] = useState<string>('');
   const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
   const NODE_RADIUS = 4;
-  const fgRef = useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
+  const fgRef =
+    useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   useEffect(() => {
@@ -89,7 +97,14 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     (node: INodeType, ctx: CanvasRenderingContext2D) => {
       if (highlightNode && node.id === highlightNode.id) {
         ctx.beginPath();
-        ctx.arc(node.x as number, node.y as number, NODE_RADIUS, 0, 2 * Math.PI, false);
+        ctx.arc(
+          node.x as number,
+          node.y as number,
+          NODE_RADIUS,
+          0,
+          2 * Math.PI,
+          false
+        );
         ctx.strokeStyle = 'red';
         ctx.lineWidth = 1.5;
         ctx.stroke();
@@ -153,7 +168,9 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 
               paintRing(node, ctx);
             }}
-            nodeCanvasObjectMode={(node) => (highlightNode && node.id === highlightNode.id ? 'before' : 'after')}
+            nodeCanvasObjectMode={node =>
+              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
+            }
             linkDirectionalArrowLength={3.5}
             linkDirectionalArrowRelPos={1}
           />
