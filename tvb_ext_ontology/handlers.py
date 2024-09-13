@@ -261,7 +261,14 @@ def construct_metadata(nodes_data):
         },
         "integration": {
             "method": custom_get(nodes_data, "integrationMethod", "Heun"),
-            "noise": custom_get(nodes_data, "noise", None),
+            "noise": (
+                {
+                    "additive": "additive"
+                    in custom_get(nodes_data, "noise", None).lower()
+                }
+                if custom_get(nodes_data, "noise", None)
+                else None
+            ),
         },
     }
     return metadata
