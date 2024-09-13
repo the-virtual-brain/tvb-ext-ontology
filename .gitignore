@@ -127,3 +127,4 @@ dmypy.json
 workspace_export.py
 test_output
 .tvb_ext_ontology.log.*
+ses-1_*
