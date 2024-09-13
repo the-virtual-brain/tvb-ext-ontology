@@ -33,9 +33,8 @@ class NodeHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
-
-        LOGGER.info(f'Querying ontology for nodes with label: {label}')
-        node_data = onto_api.get_node_by_label(label)
+        LOGGER.info(f"Querying ontology for nodes with label: {label}")
+        node_data = onto_api.query_nodes(label)
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -55,12 +54,12 @@ class NodeConnectionsHandler(APIHandler):
             return
 
         onto_api.expand_node_relationships(label)
-        nodes = onto_api.nodes
-        links = onto_api.edges
-        node_data = {"nodes": nodes, "links": links}
+        node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No connections found found for node: {label}"}))
+            self.finish(
+                json.dumps({"error": f"No connections found found for node: {label}"})
+            )
             return
 
         self.set_header("Content-Type", "application/json")
@@ -80,12 +79,16 @@ class NodeChildrenConnectionsHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
-        LOGGER.info(f'Searching for children for node: {label} with id {id}')
+        LOGGER.info(f"Searching for children for node: {label} with id {id}")
         onto_api.expand_node_relationships(label)
         node_data = onto_api.get_child_connections(id)
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No children found for node {label} with id {id}"}))
+            self.finish(
+                json.dumps(
+                    {"error": f"No children found for node {label} with id {id}"}
+                )
+            )
             return
 
         self.set_header("Content-Type", "application/json")
@@ -105,12 +108,14 @@ class NodeParentConnectionsHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
-        LOGGER.info(f'Searching for parents for node: {label} with id {id}')
+        LOGGER.info(f"Searching for parents for node: {label} with id {id}")
         onto_api.expand_node_relationships(label)
         node_data = onto_api.get_parent_connections(id)
         if not node_data:
             self.set_status(404)
-            self.finish(json.dumps({"error": f"No parents found for node {label} with id {id}"}))
+            self.finish(
+                json.dumps({"error": f"No parents found for node {label} with id {id}"})
+            )
             return
 
         self.set_header("Content-Type", "application/json")
@@ -126,27 +131,30 @@ class ExportWorkspaceHandler(APIHandler):
             directory = validate_directory_path(directory)
 
             metadata = construct_metadata(nodes_data)
-            LOGGER.info(f'Created the metadata: {metadata}')
+            LOGGER.info(f"Created the metadata: {metadata}")
 
             onto_api.configure_simulation_experiment(metadata)
-            LOGGER.info('Configured simulation experiment')
+            LOGGER.info("Configured simulation experiment")
 
             # treat different export type options
-            if export_type == 'py':
+            if export_type == "py":
                 onto_api.experiment.save_code(directory)
-                LOGGER.info('Saved code')
-            elif export_type == 'xml':
+                LOGGER.info("Saved code")
+            elif export_type == "xml":
                 onto_api.experiment.save_model_specification(directory)
-                LOGGER.info('Saved model specification')
-            elif export_type == 'yaml':
+                LOGGER.info("Saved model specification")
+            elif export_type == "yaml":
                 onto_api.experiment.save_metadata(directory)
-                LOGGER.info('Saved metadata')
+                LOGGER.info("Saved metadata")
 
             # send success json
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
-                    {"status": "success", "message": f"File saved in folder {os.path.abspath(directory)}"}
+                    {
+                        "status": "success",
+                        "message": f"File saved in folder {os.path.abspath(directory)}",
+                    }
                 )
             )
         except InvalidDirectoryException as e:
@@ -169,26 +177,29 @@ class RunSimulationHandler(APIHandler):
             directory = validate_directory_path(directory)
 
             metadata = construct_metadata(nodes_data)
-            LOGGER.info(f'Created the metadata: {metadata}')
+            LOGGER.info(f"Created the metadata: {metadata}")
 
             onto_api.configure_simulation_experiment(metadata)
-            LOGGER.info('Configured simulation experiment')
+            LOGGER.info("Configured simulation experiment")
 
             # run simulation
-            LOGGER.info('Starting to run the experiment')
+            LOGGER.info("Starting to run the experiment")
             onto_api.experiment.run(simulation_length=10)
-            LOGGER.info('Finished the experiment')
+            LOGGER.info("Finished the experiment")
 
             # save TS to disk
-            LOGGER.info('Saving Time Series...')
+            LOGGER.info("Saving Time Series...")
             onto_api.experiment.save_timeseries(directory)
-            LOGGER.info(f'Saved Time Series at {directory}')
+            LOGGER.info(f"Saved Time Series at {directory}")
 
             # Send a JSON response indicating success
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
-                    {"status": "success", "message": f"Saved simulation results in folder {os.path.abspath(directory)}"}
+                    {
+                        "status": "success",
+                        "message": f"Saved simulation results in folder {os.path.abspath(directory)}",
+                    }
                 )
             )
         except InvalidDirectoryException as e:
@@ -216,6 +227,8 @@ def custom_get(data, key, default):
     Any: Value corresponding to the key in the dictionary or the default value.
     """
     return data.get(key, default) if data.get(key, default) != "None" else default
+
+
 def construct_metadata(nodes_data):
     """
     Construct the metadata dictionary using the data coming from the configured workspace
@@ -236,9 +249,7 @@ def construct_metadata(nodes_data):
         "connectivity": {
             "parcellation": {
                 "atlas": {
-                    "name": custom_get(
-                        nodes_data, "parcellation", "DesikanKilliany"
-                    ),
+                    "name": custom_get(nodes_data, "parcellation", "DesikanKilliany"),
                 }
             },
             "tractogram": {
@@ -263,11 +274,11 @@ def parse_json_body(body):
     data = json.loads(body.decode("utf-8"))
     nodes_data = data.get("data", {})
     export_type = data.get("exportType", "py")
-    directory = data.get("directory", '')
-    LOGGER.info('Workspace data coming from extension:')
-    LOGGER.info(f'Export type: {export_type}')
-    LOGGER.info(f'Node data: {nodes_data}')
-    LOGGER.info(f'Directory path: {directory}')
+    directory = data.get("directory", "")
+    LOGGER.info("Workspace data coming from extension:")
+    LOGGER.info(f"Export type: {export_type}")
+    LOGGER.info(f"Node data: {nodes_data}")
+    LOGGER.info(f"Directory path: {directory}")
 
     return nodes_data, export_type, directory
 
@@ -276,13 +287,14 @@ def validate_directory_path(directory):
     """
     Validate a directory path given by the user
     """
-    LOGGER.info(f'Validating path {directory}')
-    if directory == '':
+    LOGGER.info(f"Validating path {directory}")
+    if directory == "":
         directory = os.getcwd()
     if not os.path.isdir(directory):
-        raise InvalidDirectoryException(f'Invalid directory path: \"{directory}\"')
+        raise InvalidDirectoryException(f'Invalid directory path: "{directory}"')
 
     return directory
+
 
 def setup_handlers(web_app):
     host_pattern = ".*$"
@@ -316,4 +328,5 @@ def setup_handlers(web_app):
         (export_workspace_pattern, ExportWorkspaceHandler),
         (run_simulation_pattern, RunSimulationHandler),
     ]
+
     web_app.add_handlers(host_pattern, handlers)
