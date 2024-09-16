@@ -171,7 +171,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
             onNodeClick={handleNodeClick}
             linkCurvature={0.15}
             nodeCanvasObject={(node, ctx, globalScale) => {
-              const label = node.symbol;
+              const label = node.label;
               const fontSize = 12 / globalScale;
               ctx.font = `${fontSize}px Sans-Serif`;
               ctx.fillStyle = 'black';
