@@ -8,7 +8,9 @@ import { IWorkspaceState } from './components/interfaces/WorkspaceInterfaces';
 import TreeViewComponent from './components/TreeView';
 
 const App: React.FC = () => {
-  const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(null);
+  const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(
+    null
+  );
 
   const initialWorkspaceState: IWorkspaceState = {
     model: null,
@@ -18,7 +20,9 @@ const App: React.FC = () => {
     noise: null,
     integrationMethod: null
   };
-  const [workspace, setWorkspace] = useState<IWorkspaceState>(initialWorkspaceState);
+  const [workspace, setWorkspace] = useState<IWorkspaceState>(
+    initialWorkspaceState
+  );
 
   const addToWorkspace = (node: ISelectedNodeType) => {
     setWorkspace(prevWorkspace => {
@@ -37,12 +41,15 @@ const App: React.FC = () => {
     });
   };
 
-  const updateConnectivityOptions = (optionType: 'parcellation' | 'tractogram', value: string) => {
+  const updateConnectivityOptions = (
+    optionType: 'parcellation' | 'tractogram',
+    value: string
+  ) => {
     setWorkspace(prev => {
       return {
         ...prev,
         parcellation: optionType === 'parcellation' ? value : prev.parcellation,
-        tractogram: optionType === 'tractogram' ? value : prev.tractogram,
+        tractogram: optionType === 'tractogram' ? value : prev.tractogram
       };
     });
   };
@@ -53,8 +60,15 @@ const App: React.FC = () => {
 
   return (
     <div className="layout">
-      <InfoBoxComponent selectedNode={selectedNode} addToWorkspace={addToWorkspace} />
-      <WorkspaceComponent workspace={workspace} updateConnectivityOptions={updateConnectivityOptions} resetWorkspace={resetWorkspace}/>
+      <InfoBoxComponent
+        selectedNode={selectedNode}
+        addToWorkspace={addToWorkspace}
+      />
+      <WorkspaceComponent
+        workspace={workspace}
+        updateConnectivityOptions={updateConnectivityOptions}
+        resetWorkspace={resetWorkspace}
+      />
       <TreeViewComponent selectedNode={selectedNode} />
       <GraphViewComponent setSelectedNode={setSelectedNode} />
     </div>

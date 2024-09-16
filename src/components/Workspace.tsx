@@ -2,12 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { IWorkspaceProps } from './interfaces/WorkspaceInterfaces';
 import { exportWorkspace, runSimulation } from '../handler';
 
-const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnectivityOptions, resetWorkspace }) => {
+const WorkspaceComponent: React.FC<IWorkspaceProps> = ({
+  workspace,
+  updateConnectivityOptions,
+  resetWorkspace
+}) => {
   const [exportType, setExportType] = useState('py');
   const [message, setMessage] = useState<string | null>(null);
   const [directory, setDirectory] = useState('');
 
-  const parcellationOptions = ['DesikanKilliany', 'Destrieux', 'Schaefer1000', 'hcpmmp1', 'virtualdbs'];
+  const parcellationOptions = [
+    'DesikanKilliany',
+    'Destrieux',
+    'Schaefer1000',
+    'hcpmmp1',
+    'virtualdbs'
+  ];
   const tractogramOptions = ['MghUscHcp32', 'PPMI85', 'dTOR'];
 
   const constructNodeData = () => {
@@ -17,7 +27,9 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
       tractogram: workspace.tractogram ? workspace.tractogram : 'None',
       coupling: workspace.coupling ? workspace.coupling.label : 'None',
       noise: workspace.noise ? workspace.noise.label : 'None',
-      integrationMethod: workspace.integrationMethod ? workspace.integrationMethod.label : 'None',
+      integrationMethod: workspace.integrationMethod
+        ? workspace.integrationMethod.label
+        : 'None'
     };
 
     return nodeData;
@@ -78,7 +90,9 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
     <div className="workspace">
       <div className="workspace-header">
         <h3>Workspace</h3>
-        <button className="reset-button" onClick={resetWorkspace}>Reset Workspace</button>
+        <button className="reset-button" onClick={resetWorkspace}>
+          Reset Workspace
+        </button>
       </div>
       <div>
         <h4>Model</h4>
@@ -92,9 +106,13 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
             <select
               id="parcellation"
               value={workspace.parcellation || ''}
-              onChange={(e) => updateConnectivityOptions('parcellation', e.target.value)} // Update state on change
+              onChange={e =>
+                updateConnectivityOptions('parcellation', e.target.value)
+              } // Update state on change
             >
-              <option value="" disabled>Select a parcellation</option>
+              <option value="" disabled>
+                Select a parcellation
+              </option>
               {parcellationOptions.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
@@ -109,9 +127,13 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
             <select
               id="tractogram"
               value={workspace.tractogram || ''}
-              onChange={(e) => updateConnectivityOptions('tractogram', e.target.value)} // Update state on change
+              onChange={e =>
+                updateConnectivityOptions('tractogram', e.target.value)
+              } // Update state on change
             >
-              <option value="" disabled>Select a tractogram</option>
+              <option value="" disabled>
+                Select a tractogram
+              </option>
               {tractogramOptions.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
@@ -131,7 +153,11 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
       </div>
       <div>
         <h4>Integration Method</h4>
-        <p>{workspace.integrationMethod ? workspace.integrationMethod.label : 'None'}</p>
+        <p>
+          {workspace.integrationMethod
+            ? workspace.integrationMethod.label
+            : 'None'}
+        </p>
       </div>
 
       {/* Export controls */}
@@ -142,7 +168,7 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
             <select
               id="export-type"
               value={exportType}
-              onChange={(e) => setExportType(e.target.value)}
+              onChange={e => setExportType(e.target.value)}
             >
               <option value="py">Simulation code (.py)</option>
               <option value="xml">Model specification (.xml)</option>
@@ -150,21 +176,23 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({ workspace, updateConnec
             </select>
           </div>
         </div>
-
         <div className="export-control">
           <label htmlFor="directory">Save Directory Path: </label>
           <input
             id="directory"
             type="text"
             value={directory}
-            onChange={(e) => setDirectory(e.target.value)}
+            onChange={e => setDirectory(e.target.value)}
             placeholder="/home/user/downloads"
           />
         </div>
-
         <div className="button-container">
-          <button className="export-button" onClick={handleExport}>Export</button>
-          <button className="export-button" onClick={handleRunSimulation}>Run Simulation</button>
+          <button className="export-button" onClick={handleExport}>
+            Export
+          </button>
+          <button className="export-button" onClick={handleRunSimulation}>
+            Run Simulation
+          </button>
         </div>
         {message && <p>{message}</p>} {/* Display success/error message */}
       </div>

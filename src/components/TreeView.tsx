@@ -26,8 +26,16 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
     const fetchAndSetParents = async () => {
       try {
-        const { nodes, links } = await fetchNodeParents(selectedNode.label, selectedNode.id);
-        const parentData = processNodeRelations(nodes, links, selectedNode.id, 'parents');
+        const { nodes, links } = await fetchNodeParents(
+          selectedNode.label,
+          selectedNode.id
+        );
+        const parentData = processNodeRelations(
+          nodes,
+          links,
+          selectedNode.id,
+          'parents'
+        );
         setParents(parentData);
       } catch (error) {
         console.error('Failed to fetch parents:', error);
@@ -36,8 +44,16 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
 
     const fetchAndSetChildren = async () => {
       try {
-        const { nodes, links } = await fetchNodeChildren(selectedNode.label, selectedNode.id);
-        const childData = processNodeRelations(nodes, links, selectedNode.id, 'children');
+        const { nodes, links } = await fetchNodeChildren(
+          selectedNode.label,
+          selectedNode.id
+        );
+        const childData = processNodeRelations(
+          nodes,
+          links,
+          selectedNode.id,
+          'children'
+        );
         setChildren(childData);
       } catch (error) {
         console.error('Failed to fetch children:', error);
@@ -62,7 +78,9 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
   ): INodeRelation[] => {
     return links
       .filter((link: ILinkType) =>
-        type === 'parents' ? link.target === currentNodeId : link.source === currentNodeId
+        type === 'parents'
+          ? link.target === currentNodeId
+          : link.source === currentNodeId
       )
       .map((link: ILinkType) => {
         const relatedNode = nodes.find((node: INodeType) =>

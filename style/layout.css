@@ -72,11 +72,6 @@
   margin-left: auto; /* Aligns it to the right */
 }
 
-.info-box button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 /* Workspace view */
 .workspace {
   grid-area: workspace;
@@ -186,10 +181,6 @@
   box-sizing: border-box;
 }
 
-.button-container .export-button:last-child {
-  margin-right: 0;
-}
-
 /* Common styling */
 .search-bar input,
 .export-control input {
@@ -217,4 +208,14 @@
 .info-box button:hover,
 .export-button:hover {
   background-color: #0056b3;
+}
+
+/* keep the right order of specificity in css */
+.info-box button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.button-container .export-button:last-child {
+  margin-right: 0;
 }
