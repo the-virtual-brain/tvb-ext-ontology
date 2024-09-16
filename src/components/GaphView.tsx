@@ -4,7 +4,12 @@ import ForceGraph2D, {
   LinkObject,
   NodeObject
 } from 'react-force-graph-2d';
-import { fetchNodeByLabel, fetchNodeChildren } from '../handler';
+import {
+  fetchNodeByLabel,
+  fetchNodeChildren,
+  fetchNodeParents
+} from '../handler';
+
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
 import { ILinkType, INodeType } from './interfaces/GraphViewInterfaces';
 
@@ -57,15 +62,26 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     console.log('Node clicked: ', node);
     node.collapsed = !node.collapsed;
 
-    const connections = await fetchNodeChildren(node.label, node.id);
-    node.childNodes = connections.nodes;
-    node.childLinks = connections.links;
+    // Fetch both children and parents
+    const [childrenConnections, parentsConnections] = await Promise.all([
+      fetchNodeChildren(node.label, node.id),
+      fetchNodeParents(node.label, node.id)
+    ]);
+
+    // Combine connections from children and parents
+    const combinedConnections = {
+      nodes: [...childrenConnections.nodes, ...parentsConnections.nodes],
+      links: [...childrenConnections.links, ...parentsConnections.links]
+    };
+
+    node.childNodes = combinedConnections.nodes;
+    node.childLinks = combinedConnections.links;
 
     const visibleNodes: INodeType[] = [];
     const visibleLinks: ILinkType[] = [];
     let newNodes: INodeType[] = [];
     let newLinks: ILinkType[] = [];
-    const visitedIds: string[] = [];
+    const visitedIds: number[] = [];
 
     for (const n of data.nodes) {
       visitedIds.push(n.id);
@@ -155,7 +171,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
             onNodeClick={handleNodeClick}
             linkCurvature={0.15}
             nodeCanvasObject={(node, ctx, globalScale) => {
-              const label = node.label;
+              const label = node.symbol;
               const fontSize = 12 / globalScale;
               ctx.font = `${fontSize}px Sans-Serif`;
               ctx.fillStyle = 'black';
