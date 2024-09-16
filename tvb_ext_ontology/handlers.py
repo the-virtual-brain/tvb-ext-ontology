@@ -42,8 +42,6 @@ class NodeHandler(APIHandler):
             return
 
         self.set_header("Content-Type", "application/json")
-        print(node_data)
-        print()
         self.finish(json.dumps(node_data))
 
 
