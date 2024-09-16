@@ -73,7 +73,7 @@ const TreeViewComponent: React.FC<ITreeViewProps> = ({ selectedNode }) => {
   const processNodeRelations = (
     nodes: INodeType[],
     links: ILinkType[],
-    currentNodeId: string,
+    currentNodeId: number,
     type: 'parents' | 'children'
   ): INodeRelation[] => {
     return links

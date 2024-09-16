@@ -1,5 +1,5 @@
 export interface INodeType {
-  id: string;
+  id: number;
   label: string;
   type: string;
   definition: string;
@@ -13,7 +13,7 @@ export interface INodeType {
 }
 
 export interface ILinkType {
-  source: string;
-  target: string;
+  source: number;
+  target: number;
   type: string;
 }

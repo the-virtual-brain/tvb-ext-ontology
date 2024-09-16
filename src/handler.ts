@@ -78,7 +78,7 @@ export async function fetchNodeConnections(
 
 export async function fetchNodeChildren(
   label: string,
-  id: string
+  id: number
 ): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<{
@@ -94,7 +94,7 @@ export async function fetchNodeChildren(
 
 export async function fetchNodeParents(
   label: string,
-  id: string
+  id: number
 ): Promise<{ nodes: INodeType[]; links: ILinkType[] }> {
   try {
     const response = await requestAPI<{

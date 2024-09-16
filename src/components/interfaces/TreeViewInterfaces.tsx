@@ -1,5 +1,5 @@
 export interface ITreeNode {
-  id: string;
+  id: number;
   label: string;
   type: string;
   children: ITreeNode[];

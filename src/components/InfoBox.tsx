@@ -4,7 +4,7 @@ import { fetchNodeByLabel } from '../handler';
 
 interface IInfoBoxProps {
   selectedNode: {
-    id: string;
+    id: number;
     label: string;
     type: string;
     definition: string;
@@ -61,7 +61,7 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
 
   return (
     <div className="info-box">
-      <h3>Node Details</h3>
+      {/* <h3>Node Details</h3> */}
       {selectedNode ? (
         <div>
           <div className="node-info-container">
