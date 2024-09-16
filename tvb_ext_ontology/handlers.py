@@ -34,13 +34,16 @@ class NodeHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
         LOGGER.info(f"Querying ontology for nodes with label: {label}")
-        node_data = onto_api.query_nodes(label)
+        onto_api.query_nodes(label)
+        node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
             return
 
         self.set_header("Content-Type", "application/json")
+        print(node_data)
+        print()
         self.finish(json.dumps(node_data))
 
 
@@ -53,7 +56,7 @@ class NodeConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
 
-        onto_api.expand_node_relationships(label)
+        onto_api.expand_node_relationships(id)
         node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
@@ -80,8 +83,9 @@ class NodeChildrenConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
         LOGGER.info(f"Searching for children for node: {label} with id {id}")
-        onto_api.expand_node_relationships(label)
+        onto_api.expand_node_relationships(id)
         node_data = onto_api.get_child_connections(id)
+        node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
             self.finish(
@@ -109,8 +113,9 @@ class NodeParentConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
         LOGGER.info(f"Searching for parents for node: {label} with id {id}")
-        onto_api.expand_node_relationships(label)
+        onto_api.expand_node_relationships(id)
         node_data = onto_api.get_parent_connections(id)
+        node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
             self.finish(
