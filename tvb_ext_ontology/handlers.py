@@ -1,9 +1,10 @@
 import json
 import os
+import time
 
+import tornado
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
-import tornado
 from tvbo.api.ontology_api import OntologyAPI
 
 from tvb_ext_ontology.exceptions import InvalidDirectoryException
@@ -33,6 +34,9 @@ class NodeHandler(APIHandler):
             self.set_status(400)
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
+
+        time.sleep(0.5)
+
         LOGGER.info(f"Querying ontology for nodes with label: {label}")
         onto_api.query_nodes(label)
         node_data = onto_api.update_graph()
