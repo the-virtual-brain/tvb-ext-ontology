@@ -5,6 +5,7 @@ export interface ISelectedNodeType {
   label: string;
   type: string;
   definition: string;
+  description: string;
   iri: string;
   requires: string[];
   childNodes?: INodeType[];

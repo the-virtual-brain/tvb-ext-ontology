@@ -220,3 +220,17 @@
 .button-container .export-button:last-child {
   margin-right: 0;
 }
+
+.nodehover {
+  position: absolute;
+  bottom: 10px;
+  left: 10px !important; /* Position the infobox on the left */
+  right: auto; /* Ensure the right positioning is removed */
+  background-color: white;
+  padding: 10px;
+  border: 1px solid blue;
+  display: block;
+  width: 200px;
+  word-wrap: break-word;
+  z-index: 1000; /* Ensure it appears above other elements */
+}

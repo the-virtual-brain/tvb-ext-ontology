@@ -8,6 +8,7 @@ interface IInfoBoxProps {
     label: string;
     type: string;
     definition: string;
+    description: string;
     iri: string;
     requires: string[];
   } | null;

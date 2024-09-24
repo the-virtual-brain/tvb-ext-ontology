@@ -28,6 +28,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   });
   const [searchLabel, setSearchLabel] = useState<string>('');
   const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<INodeType | null>(null); // Define hoveredNode state
   const NODE_RADIUS = 4;
   const fgRef =
     useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
@@ -54,6 +55,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       label: node.label,
       type: node.type,
       definition: node.definition,
+      description: node.description,
       iri: node.iri,
       requires: node.requires,
       childNodes: node.childNodes,
@@ -181,6 +183,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
             ref={fgRef}
             graphData={data}
             onNodeClick={handleNodeClick}
+            onNodeHover={node => setHoveredNode(node ? node : null)} // onNodeHover implementation
             linkCurvature={0.15}
             nodeCanvasObject={(node, ctx, globalScale) => {
               const label = node.label;
@@ -230,6 +233,12 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
           <div>Search for a term</div>
         )}
       </div>
+      {hoveredNode && (
+        <div className="nodehover">
+          <strong>{hoveredNode.label}</strong>:{' '}
+          {hoveredNode.description || 'No definition available'}
+        </div>
+      )}
     </div>
   );
 };

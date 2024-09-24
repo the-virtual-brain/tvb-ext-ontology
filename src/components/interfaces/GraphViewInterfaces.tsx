@@ -3,6 +3,7 @@ export interface INodeType {
   label: string;
   type: string;
   definition: string;
+  description: string;
   iri: string;
   requires: string[];
   x?: number;
