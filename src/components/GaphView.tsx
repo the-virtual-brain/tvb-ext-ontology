@@ -197,3 +197,54 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     </div>
   );
 };
+
+
+              paintRing(node, ctx);
+            }}
+            nodeCanvasObjectMode={node =>
+              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
+            }
+            linkDirectionalArrowLength={3.5}
+            linkDirectionalArrowRelPos={1}
+          />
+        ) : (
+          <div>Search for a term</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+              paintRing(node, ctx);
+            }}
+            nodeCanvasObjectMode={node =>
+              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
+            }
+            linkDirectionalArrowLength={3.5}
+            linkDirectionalArrowRelPos={1}
+          />
+        ) : (
+          <div>Search for a term</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+              paintRing(node, ctx);
+            }}
+            nodeCanvasObjectMode={node =>
+              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
+            }
+            linkDirectionalArrowLength={3.5}
+            linkDirectionalArrowRelPos={1}
+          />
+        ) : (
+          <div>Search for a term</div>
+        )}
+      </div>
+    </div>
+  );
+};
