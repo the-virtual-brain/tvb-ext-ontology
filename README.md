@@ -69,12 +69,14 @@ jlpm build
 
 You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
 
-```bash
-# Watch the source directory in one terminal, automatically rebuilding when needed
-jlpm watch
-# Run JupyterLab in another terminal
-jupyter lab
-```
+1. Watch the source directory in one terminal, automatically rebuilding when needed
+    ```bash
+    jlpm watch
+    ```
+2. Run JupyterLab with watchmedo in another terminal to see the changes you make to the source
+    ```bash
+    watchmedo auto-restart --patterns="*.py" --recursive -- jupyter lab --no-browser
+    ```
 
 With the watch command running, every saved change will immediately be built locally and available in your running JupyterLab. Refresh JupyterLab to load the change in your browser (you may need to wait several seconds for the extension to be rebuilt).
 
