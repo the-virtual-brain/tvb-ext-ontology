@@ -235,8 +235,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       </div>
       {hoveredNode && (
         <div className="nodehover">
-          <strong>{hoveredNode.label}</strong>:{' '}
-          {hoveredNode.description || 'No definition available'}
+          <strong>{hoveredNode.label}</strong>: {hoveredNode.description}
         </div>
       )}
     </div>
