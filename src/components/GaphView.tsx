@@ -7,7 +7,8 @@ import ForceGraph2D, {
 import {
   fetchNodeByLabel,
   fetchNodeChildren,
-  fetchNodeParents
+  fetchNodeParents,
+  fetchNodeConnections
 } from '../handler';
 
 import { ISelectedNodeType } from './interfaces/InfoBoxInterfaces';
@@ -59,6 +60,11 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
       collapsed: false
     });
     setHighlightNode(node);
+
+    // if (fgRef.current && node.x !== undefined && node.y !== undefined) {
+    //   fgRef.current.centerAt(node.x, node.y, 1000); // Center with animation
+    // }
+
     console.log('Node clicked: ', node);
     node.collapsed = !node.collapsed;
 
@@ -106,6 +112,9 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     newNodes = [...data.nodes, ...visibleNodes];
     newLinks = [...data.links, ...visibleLinks];
     setData({ nodes: newNodes, links: newLinks });
+
+    const res = await fetchNodeConnections('');
+    setData(res);
   };
 
   // highlight selected node
@@ -151,6 +160,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     }
   }, [data, isInitialRender]);
 
+  const graphContainerRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <div className="ontology-graph">
       <div className="search-bar">
@@ -163,7 +174,7 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      <div className="graph-container">
+      <div ref={graphContainerRef} className="graph-container">
         {data ? (
           <ForceGraph2D
             ref={fgRef}
@@ -182,56 +193,29 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
               const yCoord = node.y as number;
               ctx.fillText(label, xCoord, yCoord + 5);
 
-              paintRing(node, ctx);
-            }}
-            nodeCanvasObjectMode={node =>
-              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
-            }
-            linkDirectionalArrowLength={3.5}
-            linkDirectionalArrowRelPos={1}
-          />
-        ) : (
-          <div>Search for a term</div>
-        )}
-      </div>
-    </div>
-  );
-};
+              // Draw cross in the center of the canvas TODO: Remove this
+              const canvasWidth =
+                graphContainerRef.current?.clientWidth ?? ctx.canvas.width;
 
+              const canvasHeight =
+                graphContainerRef.current?.clientHeight ?? ctx.canvas.height;
+              const crossSize = 10;
 
-              paintRing(node, ctx);
-            }}
-            nodeCanvasObjectMode={node =>
-              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
-            }
-            linkDirectionalArrowLength={3.5}
-            linkDirectionalArrowRelPos={1}
-          />
-        ) : (
-          <div>Search for a term</div>
-        )}
-      </div>
-    </div>
-  );
-};
+              // Vertical line of the cross
+              ctx.beginPath();
+              ctx.moveTo(canvasWidth / 2, canvasHeight / 2 - crossSize);
+              ctx.lineTo(canvasWidth / 2, canvasHeight / 2 + crossSize);
+              ctx.strokeStyle = 'blue';
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
 
-
-              paintRing(node, ctx);
-            }}
-            nodeCanvasObjectMode={node =>
-              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
-            }
-            linkDirectionalArrowLength={3.5}
-            linkDirectionalArrowRelPos={1}
-          />
-        ) : (
-          <div>Search for a term</div>
-        )}
-      </div>
-    </div>
-  );
-};
-
+              // Horizontal line of the cross
+              ctx.beginPath();
+              ctx.moveTo(canvasWidth / 2 - crossSize, canvasHeight / 2);
+              ctx.lineTo(canvasWidth / 2 + crossSize, canvasHeight / 2);
+              ctx.strokeStyle = 'blue';
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
 
               paintRing(node, ctx);
             }}
