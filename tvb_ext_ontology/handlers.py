@@ -35,11 +35,10 @@ class NodeHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'label' parameter"}))
             return
 
-        time.sleep(0.5)
-
         LOGGER.info(f"Querying ontology for nodes with label: {label}")
         onto_api.query_nodes(label)
         node_data = onto_api.update_graph()
+
         if not node_data:
             self.set_status(404)
             self.finish(json.dumps({"error": f"No data found for label: {label}"}))
@@ -52,19 +51,17 @@ class NodeHandler(APIHandler):
 class NodeConnectionsHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
-        label = self.get_argument("label", None)
-        if not label:
-            self.set_status(400)
-            self.finish(json.dumps({"error": "Missing 'label' parameter"}))
-            return
+        # label = self.get_argument("label", None)
+        # if not label:
+        #     self.set_status(400)
+        #     self.finish(json.dumps({"error": "Missing 'label' parameter"}))
+        #     return
 
-        onto_api.expand_node_relationships(id)
+        # onto_api.expand_node_relationships(id)
         node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
-            self.finish(
-                json.dumps({"error": f"No connections found found for node: {label}"})
-            )
+            self.finish(json.dumps({"error": f"No connections found"}))
             return
 
         self.set_header("Content-Type", "application/json")
@@ -85,9 +82,9 @@ class NodeChildrenConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
         LOGGER.info(f"Searching for children for node: {label} with id {id}")
-        onto_api.expand_node_relationships(id)
+        # onto_api.expand_node_relationships(id)
         node_data = onto_api.get_child_connections(id)
-        node_data = onto_api.update_graph()
+        # node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
             self.finish(
@@ -115,9 +112,9 @@ class NodeParentConnectionsHandler(APIHandler):
             self.finish(json.dumps({"error": "Missing 'ID' parameter"}))
             return
         LOGGER.info(f"Searching for parents for node: {label} with id {id}")
-        onto_api.expand_node_relationships(id)
+        # onto_api.expand_node_relationships(id)
         node_data = onto_api.get_parent_connections(id)
-        node_data = onto_api.update_graph()
+        # node_data = onto_api.update_graph()
         if not node_data:
             self.set_status(404)
             self.finish(
