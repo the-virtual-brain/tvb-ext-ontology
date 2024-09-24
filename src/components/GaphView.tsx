@@ -28,7 +28,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   });
   const [searchLabel, setSearchLabel] = useState<string>('');
   const [highlightNode, setHighlightNode] = useState<INodeType | null>(null);
-  const [hoveredNode, setHoveredNode] = useState<INodeType | null>(null); // Define hoveredNode state
+  // const [hoveredNode, setHoveredNode] = useState<INodeType | null>(null);
+
   const NODE_RADIUS = 4;
   const fgRef =
     useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
@@ -166,78 +167,83 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   const graphContainerRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div className="ontology-graph">
-      <div className="search-bar">
-        <input
-          type="text"
-          value={searchLabel}
-          onChange={e => setSearchLabel(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Enter node label"
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
-      <div ref={graphContainerRef} className="graph-container">
-        {data ? (
-          <ForceGraph2D
-            ref={fgRef}
-            graphData={data}
-            onNodeClick={handleNodeClick}
-            onNodeHover={node => setHoveredNode(node ? node : null)} // onNodeHover implementation
-            linkCurvature={0.15}
-            nodeCanvasObject={(node, ctx, globalScale) => {
-              const label = node.label;
-              const fontSize = 12 / globalScale;
-              ctx.font = `${fontSize}px Sans-Serif`;
-              ctx.fillStyle = 'black';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'top';
-
-              const xCoord = node.x as number;
-              const yCoord = node.y as number;
-              ctx.fillText(label, xCoord, yCoord + 5);
-
-              // Draw cross in the center of the canvas TODO: Remove this
-              const canvasWidth =
-                graphContainerRef.current?.clientWidth ?? ctx.canvas.width;
-
-              const canvasHeight =
-                graphContainerRef.current?.clientHeight ?? ctx.canvas.height;
-              const crossSize = 10;
-
-              // Vertical line of the cross
-              ctx.beginPath();
-              ctx.moveTo(canvasWidth / 2, canvasHeight / 2 - crossSize);
-              ctx.lineTo(canvasWidth / 2, canvasHeight / 2 + crossSize);
-              ctx.strokeStyle = 'blue';
-              ctx.lineWidth = 1.5;
-              ctx.stroke();
-
-              // Horizontal line of the cross
-              ctx.beginPath();
-              ctx.moveTo(canvasWidth / 2 - crossSize, canvasHeight / 2);
-              ctx.lineTo(canvasWidth / 2 + crossSize, canvasHeight / 2);
-              ctx.strokeStyle = 'blue';
-              ctx.lineWidth = 1.5;
-              ctx.stroke();
-
-              paintRing(node, ctx);
-            }}
-            nodeCanvasObjectMode={node =>
-              highlightNode && node.id === highlightNode.id ? 'before' : 'after'
-            }
-            linkDirectionalArrowLength={3.5}
-            linkDirectionalArrowRelPos={1}
+    <>
+      <div className="ontology-graph">
+        <div className="search-bar">
+          <input
+            type="text"
+            value={searchLabel}
+            onChange={e => setSearchLabel(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Enter node label"
           />
-        ) : (
-          <div>Search for a term</div>
-        )}
+          <button onClick={handleSearch}>Search</button>
+        </div>
+        <div ref={graphContainerRef} className="graph-container">
+          {data ? (
+            <ForceGraph2D
+              ref={fgRef}
+              graphData={data}
+              onNodeClick={handleNodeClick}
+              nodeAutoColorBy={d => d.type}
+              // onNodeHover={node => setHoveredNode(node ? node : null)}
+              linkCurvature={0.15}
+              nodeCanvasObject={(node, ctx, globalScale) => {
+                const label = node.label;
+                const fontSize = 12 / globalScale;
+                ctx.font = `${fontSize}px Sans-Serif`;
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+
+                const xCoord = node.x as number;
+                const yCoord = node.y as number;
+                ctx.fillText(label, xCoord, yCoord + 5);
+
+                // Draw cross in the center of the canvas TODO: Remove this
+                const canvasWidth =
+                  graphContainerRef.current?.clientWidth ?? ctx.canvas.width;
+
+                const canvasHeight =
+                  graphContainerRef.current?.clientHeight ?? ctx.canvas.height;
+                const crossSize = 10;
+
+                // Vertical line of the cross
+                ctx.beginPath();
+                ctx.moveTo(canvasWidth / 2, canvasHeight / 2 - crossSize);
+                ctx.lineTo(canvasWidth / 2, canvasHeight / 2 + crossSize);
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Horizontal line of the cross
+                ctx.beginPath();
+                ctx.moveTo(canvasWidth / 2 - crossSize, canvasHeight / 2);
+                ctx.lineTo(canvasWidth / 2 + crossSize, canvasHeight / 2);
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                paintRing(node, ctx);
+              }}
+              nodeCanvasObjectMode={node =>
+                highlightNode && node.id === highlightNode.id
+                  ? 'before'
+                  : 'after'
+              }
+              linkDirectionalArrowLength={3.5}
+              linkDirectionalArrowRelPos={1}
+            />
+          ) : (
+            <div>Search for a term</div>
+          )}
+        </div>
       </div>
-      {hoveredNode && (
+      {/* {hoveredNode && (
         <div className="nodehover">
           <strong>{hoveredNode.label}</strong>: {hoveredNode.description}
         </div>
-      )}
-    </div>
+      )} */}
+    </>
   );
 };
