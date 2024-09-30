@@ -263,7 +263,7 @@ def construct_metadata(nodes_data):
             },
         },
         "coupling": {
-            "label": custom_get(nodes_data, "coupling", "Linear"),
+            "name": custom_get(nodes_data, "coupling", "Linear"),
         },
         "integration": {
             "method": custom_get(nodes_data, "integrationMethod", "Heun"),
