@@ -144,6 +144,8 @@ class ExportWorkspaceHandler(APIHandler):
             if export_type == "py":
                 onto_api.experiment.save_code(directory)
                 LOGGER.info("Saved code")
+            elif export_type == "jl":
+                onto_api.experiment.save_model_bifurcation_analysis_code(directory)
             elif export_type == "xml":
                 onto_api.experiment.save_model_specification(directory)
                 LOGGER.info("Saved model specification")
@@ -247,7 +249,7 @@ def construct_metadata(nodes_data):
     """
     metadata = {
         "model": {
-            "label": custom_get(nodes_data, "model", "Generic2dOscillator"),
+            "name": custom_get(nodes_data, "model", "Generic2dOscillator"),
             "parameters": {},
         },
         "connectivity": {

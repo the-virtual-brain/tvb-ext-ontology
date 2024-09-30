@@ -171,6 +171,7 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({
               onChange={e => setExportType(e.target.value)}
             >
               <option value="py">Simulation code (.py)</option>
+              <option value="jl">Bifurcation analysis (.jl)</option>
               <option value="xml">Model specification (.xml)</option>
               <option value="yaml">Metadata (.yaml)</option>
             </select>
