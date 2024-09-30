@@ -21,7 +21,13 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
 }) => {
   // Valid types for adding objects to workspace
   // TODO: add valid type for connectivity
-  const validTypes = ['Neural Mass Model', 'Noise', 'Coupling', 'Integrator'];
+  const validTypes = [
+    'Neural Mass Model',
+    'Noise',
+    'Coupling',
+    'Integrator',
+    'JournalArticle'
+  ];
 
   const isAddable = selectedNode && validTypes.includes(selectedNode.type);
 

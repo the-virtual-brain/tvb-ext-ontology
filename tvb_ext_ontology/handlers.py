@@ -144,11 +144,17 @@ class ExportWorkspaceHandler(APIHandler):
             if export_type == "py":
                 onto_api.experiment.save_code(directory)
                 LOGGER.info("Saved code")
+
             elif export_type == "jl":
-                onto_api.experiment.save_model_bifurcation_analysis_code(directory)
+                p = list(onto_api.experiment.model.metadata.parameters.values())[0].name
+                onto_api.experiment.save_model_bifurcation_analysis_code(
+                    directory, ICS=p, p_min=-10, p_max=10
+                )  # TODO: remove hardcoding and add option to type in parameters in frontend
+
             elif export_type == "xml":
                 onto_api.experiment.save_model_specification(directory)
                 LOGGER.info("Saved model specification")
+
             elif export_type == "yaml":
                 onto_api.experiment.save_metadata(directory)
                 LOGGER.info("Saved metadata")
@@ -258,9 +264,7 @@ def construct_metadata(nodes_data):
                     "name": custom_get(nodes_data, "parcellation", "DesikanKilliany"),
                 }
             },
-            "tractogram": {
-                "label": custom_get(nodes_data, "tractogram", "dTOR"),
-            },
+            "tractogram": custom_get(nodes_data, "tractogram", "dTOR"),
         },
         "coupling": {
             "name": custom_get(nodes_data, "coupling", "Linear"),
